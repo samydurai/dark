@@ -1,0 +1,10 @@
+export const primaryColor = "#bb86fc";
+export const onBackgroundHE = "rgba(255,255,255, 0.87)";
+export const onBackgroundLE = "rgba(255,255,255, 0.6)";
+export const onPrimaryHE = "#000000";
+export const onPrimaryLE = "#000000";
+export const secondaryColor = "#03dac5";
+// export const backgroundColor = "#121212";
+export const backgroundColor = "#1f1b24";
+// export const backgroundColorElevation = "#272727";
+export const backgroundColorElevation = "#333038";
