@@ -16,7 +16,7 @@ import javax.validation.constraints.Pattern;
 public class AuthenticationRequest {
 
     @NotEmpty
-    private String userName;
+    private String username;
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")
     private String password;

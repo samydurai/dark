@@ -64,7 +64,7 @@ public class AuthenticationService {
     }
 
     public void register(AuthenticationRequest authenticationRequest) {
-        String userName = authenticationRequest.getUserName();
+        String userName = authenticationRequest.getUsername();
         User activeUser = userRepository.findActiveUser(userName);
         if (activeUser != null) {
             log.error("An attempt to create a duplicate user. userName - {}", userName);
@@ -74,20 +74,20 @@ public class AuthenticationService {
         User user = User.builder()
                 .active(true)
                 .password(passwordEncoder.encode(authenticationRequest.getPassword()))
-                .userName(authenticationRequest.getUserName())
+                .userName(authenticationRequest.getUsername())
                 .build();
         userRepository.save(user);
     }
 
     public String authenticate(AuthenticationRequest authenticationRequest) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUserName(),
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                             authenticationRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            log.error("An invalid attempt to login detected. userName - {}", authenticationRequest.getUserName());
+            log.error("An invalid attempt to login detected. userName - {}", authenticationRequest.getUsername());
             throw new BaseException(MessageKey.INVALID_CREDENTIALS, messageResolver.resolve(MessageKey.INVALID_CREDENTIALS.getKey()));
         }
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUserName());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         return jwtUtil.generateToken(userDetails);
     }
 }

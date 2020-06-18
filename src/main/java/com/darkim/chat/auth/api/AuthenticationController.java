@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -30,8 +32,13 @@ public class AuthenticationController {
     }
 
     @RequestMapping(path = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody @Valid AuthenticationRequest authenticationRequest) throws Exception {
-        return ResponseEntity.ok(new AuthenticationResponse(authenticationService.authenticate(authenticationRequest)));
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody @Valid AuthenticationRequest authenticationRequest, HttpServletResponse res) throws Exception {
+        String jwtToken = authenticationService.authenticate(authenticationRequest);
+        Cookie cookie = new Cookie("COOKIE_BEARER", jwtToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        res.addCookie(cookie);
+        return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
     }
 
     @RequestMapping(path = "/test", method = RequestMethod.GET)
