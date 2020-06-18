@@ -7,9 +7,10 @@ import { StyledPaper, Page, ErrorDiv } from "../Shared/StyledComponents";
 import { Method } from "axios";
 import Password from "../Shared/Component/Password";
 import { Redirect } from "react-router-dom";
+import { setAuthHeader } from "../Shared/utils/Auth";
 
-const url = "";
-const method: Method = "get";
+const url = "/register";
+const method: Method = "post";
 const checkId = (userId: string) => !!userId;
 const checkPassword = (password: string) => password.length >= 8;
 const checkRePassword = (password: string, repassword: string) =>
@@ -22,7 +23,7 @@ export default function Signup() {
   const [isIdValid, setIsIdValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [isRePasswordValid, setIsRePasswordValid] = useState(true);
-  const [payload, setPayload] = useState({ url, method, data: null });
+  const [payload, setPayload] = useState(null);
   const [data, err] = useApi(payload);
   const register = () => {
     const validId = checkId(userId);
@@ -32,18 +33,27 @@ export default function Signup() {
     setIsPasswordValid(validPassword);
     setIsRePasswordValid(validRepassword);
     if (validId && validPassword && validRepassword) {
-      setPayload((payload) => ({
-        ...payload,
-        data: { id: userId, password: password },
-      }));
+      setPayload({
+        url,
+        method,
+        data: { username: userId, password: password },
+      });
     }
   };
+  useEffect(() => {
+    if (!!data) {
+      setAuthHeader();
+    }
+  }, [data]);
   const userIdChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setUserId(e.target.value);
   const passwordChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setPassword(e.target.value);
   const repasswordChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setRepassword(e.target.value);
+  if (!!data) {
+    return <Redirect to="/chat" />;
+  }
   return (
     <Page>
       <StyledPaper>
@@ -83,8 +93,8 @@ export default function Signup() {
         <Button onClick={register} variant="contained" color="primary">
           <b>Register</b>
         </Button>
-        {err && <ErrorDiv>{err}</ErrorDiv>}
       </StyledPaper>
+      {err && <ErrorDiv>unexpected error</ErrorDiv>}
     </Page>
   );
 }
