@@ -1,5 +1,9 @@
 import axios from "axios";
 
+export interface AuthHeaders {
+  jwt: string | null;
+}
+
 function getCookie(cname: any) {
   const name = cname + "=";
   const decodedCookie = decodeURIComponent(document.cookie);
@@ -17,5 +21,11 @@ function getCookie(cname: any) {
 }
 
 export function setAuthHeader() {
-  axios.defaults.headers["X-JWT-TOKEN"] = "bruh" || getCookie("JWT");
+  const jwt = getCookie("COOKIE_BEARER");
+  axios.defaults.headers["Authorization"] = `Bearer ${jwt}`;
+  authHeaders.jwt = jwt;
 }
+
+export const authHeaders: AuthHeaders = {
+  jwt: null,
+};

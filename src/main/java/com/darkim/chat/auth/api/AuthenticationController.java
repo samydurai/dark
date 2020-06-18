@@ -32,10 +32,9 @@ public class AuthenticationController {
     }
 
     @RequestMapping(path = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody @Valid AuthenticationRequest authenticationRequest, HttpServletResponse res) throws Exception {
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse res) throws Exception {
         String jwtToken = authenticationService.authenticate(authenticationRequest);
         Cookie cookie = new Cookie("COOKIE_BEARER", jwtToken);
-        cookie.setHttpOnly(true);
         cookie.setPath("/");
         res.addCookie(cookie);
         return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
