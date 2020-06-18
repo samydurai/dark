@@ -11,8 +11,11 @@ import { setAuthHeader } from "../Shared/utils/Auth";
 
 const url = "/register";
 const method: Method = "post";
+const passwordRegex = new RegExp(
+  "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
+);
 const checkId = (userId: string) => !!userId;
-const checkPassword = (password: string) => password.length >= 8;
+const checkPassword = (password: string) => passwordRegex.test(password);
 const checkRePassword = (password: string, repassword: string) =>
   password === repassword;
 
@@ -72,7 +75,9 @@ export default function Signup() {
           value={password}
           onChange={passwordChanged}
           helperText={
-            isPasswordValid ? "" : "Password should be atleast 8 char in length"
+            isPasswordValid
+              ? ""
+              : "Password should be atleast 8 char in length and have 1 Uppercase 1 Lowercase 1 number and 1 special character"
           }
           error={!isPasswordValid}
           color="secondary"
@@ -93,8 +98,8 @@ export default function Signup() {
         <Button onClick={register} variant="contained" color="primary">
           <b>Register</b>
         </Button>
+        {err && <ErrorDiv>{err}</ErrorDiv>}
       </StyledPaper>
-      {err && <ErrorDiv>unexpected error</ErrorDiv>}
     </Page>
   );
 }
