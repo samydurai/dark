@@ -21,4 +21,13 @@ public class AuthenticationErrorHandler {
                 .build();
     }
 
+    @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handle(Throwable e) {
+        return ErrorResponse.builder()
+                .failedAt(null)
+                .failureReason("Unknown error or invalid request.")
+                .build();
+    }
+
 }

@@ -1,9 +1,12 @@
 package com.darkim.chat.auth.jwt;
 
+import com.darkim.chat.auth.error.ErrorResponse;
 import com.darkim.chat.auth.error.MessageKey;
 import com.darkim.chat.auth.error.MessageResolver;
 import com.darkim.chat.auth.provider.config.ChatUserDetailsService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,9 +31,12 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
 
-    public JWTRequestFilter(ChatUserDetailsService userDetailsService, JWTUtil jwtUtil) {
+    private final MessageResolver messageResolver;
+
+    public JWTRequestFilter(ChatUserDetailsService userDetailsService, JWTUtil jwtUtil, MessageResolver messageResolver) {
         this.userDetailsService = userDetailsService;
         this.jwtUtil = jwtUtil;
+        this.messageResolver = messageResolver;
     }
 
     @Override
@@ -38,28 +44,39 @@ public class JWTRequestFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         Cookie[] cookies = request.getCookies();
-        String jwtToken = "COOKIE_BEARER";
-        String csrfToken = "XSRF-TOKEN";
-        String clientSetXSRFToken = "X-XSRF-TOKEN";
-        Map<String, String> cookieToValueMap = Arrays.stream(cookies)
-                .collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
+        if (cookies != null) {
+            String jwtToken = "COOKIE_BEARER";
+            String csrfToken = "XSRF-TOKEN";
+            String clientSetXSRFToken = "X-XSRF-TOKEN";
+            Map<String, String> cookieToValueMap = Arrays.stream(cookies)
+                    .collect(Collectors.toMap(Cookie::getName, Cookie::getValue));
 
-        String username = null;
-        String jwt = cookieToValueMap.get(jwtToken);
-        String serverSetXSRFToken = cookieToValueMap.get(csrfToken);
-        String xsrfFromRequestHeader = request.getHeader(clientSetXSRFToken);
-        if (jwt != null) {
-            username = jwtUtil.extractUsername(jwt);
-        }
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                if (serverSetXSRFToken != null && (serverSetXSRFToken.equals(xsrfFromRequestHeader))) {
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            String username = null;
+            String jwt = cookieToValueMap.get(jwtToken);
+            String serverSetXSRFToken = cookieToValueMap.get(csrfToken);
+            String xsrfFromRequestHeader = request.getHeader(clientSetXSRFToken);
+            if (jwt != null) {
+                username = jwtUtil.extractUsername(jwt);
+            }
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                try {
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+                    if (jwtUtil.validateToken(jwt, userDetails)) {
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        usernamePasswordAuthenticationToken
+                                .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        if (serverSetXSRFToken != null && (serverSetXSRFToken.equals(xsrfFromRequestHeader))) {
+                            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                        }
+                    }
+                } catch (Exception e) {
+                    ErrorResponse errorResponse = ErrorResponse.builder()
+                            .failedAt(null)
+                            .failureReason(messageResolver.resolve(MessageKey.FILTER_ERROR.getKey()))
+                            .build();
+                    response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
                 }
             }
         }

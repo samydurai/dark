@@ -46,7 +46,6 @@ public class AuthenticationController {
         Cookie cookie = new Cookie("XSRF-TOKEN", UUID.randomUUID().toString());
         cookie.setPath("/");
         cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
-        cookie.setDomain(host);
         return cookie;
     }
 
@@ -60,7 +59,6 @@ public class AuthenticationController {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
-        cookie.setDomain(host);
         return cookie;
     }
 }
