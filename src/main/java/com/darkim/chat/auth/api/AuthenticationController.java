@@ -5,20 +5,23 @@ import com.darkim.chat.auth.model.AuthenticationRequest;
 import com.darkim.chat.auth.model.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
+@RequestMapping("/api")
 public class AuthenticationController {
 
     private AuthenticationService authenticationService;
+
+    private String domain;
 
     @Autowired
     public void setAuthenticationService(AuthenticationService authenticationService) {
@@ -28,21 +31,36 @@ public class AuthenticationController {
     @RequestMapping(path = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public ResponseEntity<Void> register(@RequestBody @Valid AuthenticationRequest authenticationRequest) {
         authenticationService.register(authenticationRequest);
-        return ResponseEntity.accepted().build();
+        return ResponseEntity.ok().build();
     }
 
     @RequestMapping(path = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody @Valid AuthenticationRequest authenticationRequest, HttpServletResponse res) throws Exception {
+    public ResponseEntity<Void> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse res, @RequestHeader String host) throws Exception {
         String jwtToken = authenticationService.authenticate(authenticationRequest);
-        Cookie cookie = new Cookie("COOKIE_BEARER", jwtToken);
-        cookie.setHttpOnly(true);
+        res.addCookie(getJWTTokenCookie(jwtToken, host));
+        res.addCookie(getCSRFTokenCookie(host));
+        return ResponseEntity.ok().build();
+    }
+
+    private Cookie getCSRFTokenCookie(String host) {
+        Cookie cookie = new Cookie("XSRF-TOKEN", UUID.randomUUID().toString());
         cookie.setPath("/");
-        res.addCookie(cookie);
-        return ResponseEntity.ok(new AuthenticationResponse(jwtToken));
+        cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
+        cookie.setDomain(host);
+        return cookie;
     }
 
     @RequestMapping(path = "/test", method = RequestMethod.GET)
     public String test() {
         return "Hello Human!";
+    }
+
+    private Cookie getJWTTokenCookie(String jwtToken, String host) {
+        Cookie cookie = new Cookie("COOKIE_BEARER", jwtToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
+        cookie.setDomain(host);
+        return cookie;
     }
 }
