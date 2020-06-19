@@ -9,4 +9,3 @@
 .idea
 target/
 src/main/resources/static/
-src/main/client/package-lock.json
