@@ -1,13 +1,13 @@
+import { Method } from "axios";
 import * as React from "react";
 import { useState, ChangeEvent, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import useApi from "../Shared/hooks/useApi";
 import { TextInput } from "../Shared/StyledMaterialui";
 import { StyledPaper, Page, ErrorDiv } from "../Shared/StyledComponents";
-import { Method } from "axios";
 import Password from "../Shared/Component/Password";
-import { Redirect } from "react-router-dom";
-import { setAuthHeader } from "../Shared/utils/Auth";
+import { setAuthHeader, authHeaders } from "../Shared/utils/Auth";
 import useMessage from "../Shared/hooks/useMessagebar";
 
 const url = "/api/register";
@@ -57,7 +57,7 @@ export default function Signup() {
     setPassword(e.target.value);
   const repasswordChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setRepassword(e.target.value);
-  if (!!data) {
+  if (authHeaders.jwt) {
     return <Redirect to="/chat" />;
   }
   return (

@@ -1,14 +1,14 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom";
+import { Method } from "axios";
+import Button from "@material-ui/core/Button";
 import { LESpan, StyledLink } from "./styles";
 import { StyledPaper, Page, ErrorDiv } from "../Shared/StyledComponents";
 import { TextInput } from "../Shared/StyledMaterialui";
-import Button from "@material-ui/core/Button";
 import Password from "../Shared/Component/Password";
-import { setAuthHeader } from "../Shared/utils/Auth";
+import { setAuthHeader, authHeaders } from "../Shared/utils/Auth";
 import useApi from "../Shared/hooks/useApi";
-import { Method } from "axios";
-import { Redirect } from "react-router-dom";
 
 const url = "/api/authenticate";
 const method: Method = "post";
@@ -38,7 +38,7 @@ export default function Login() {
       },
     });
   };
-  if (data) {
+  if (authHeaders.jwt) {
     return <Redirect to="/chat" />;
   }
   return (
