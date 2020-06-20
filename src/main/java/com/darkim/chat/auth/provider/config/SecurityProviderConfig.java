@@ -1,5 +1,6 @@
 package com.darkim.chat.auth.provider.config;
 
+import com.darkim.chat.auth.api.LogoutHandlerImpl;
 import com.darkim.chat.auth.jwt.JWTRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class SecurityProviderConfig extends WebSecurityConfigurerAdapter {
@@ -40,6 +42,10 @@ public class SecurityProviderConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/logout"))
+                .addLogoutHandler(new LogoutHandlerImpl())
+                .logoutSuccessUrl("/")
+                .and()
                 .authorizeRequests().antMatchers("/api/**").authenticated()
                 .and()
                 .authorizeRequests().antMatchers("/api/authenticate", "/api/register", "/**").permitAll()
