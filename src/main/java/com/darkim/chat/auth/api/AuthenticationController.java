@@ -5,14 +5,12 @@ import com.darkim.chat.auth.model.AuthenticationRequest;
 import com.darkim.chat.auth.model.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -35,15 +33,15 @@ public class AuthenticationController {
     }
 
     @RequestMapping(path = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<Void> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse res, @RequestHeader String host) throws Exception {
-        String jwtToken = authenticationService.authenticate(authenticationRequest);
-        res.addCookie(getJWTTokenCookie(jwtToken, host));
-        res.addCookie(getCSRFTokenCookie(host));
+    public ResponseEntity<Void> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest, HttpServletResponse res) throws Exception {
+        AuthenticationResponse authenticationResponse = authenticationService.authenticate(authenticationRequest);
+        res.addCookie(getJWTTokenCookie(authenticationResponse.getToken()));
+        res.addCookie(getCSRFTokenCookie(authenticationResponse.getCsrfToken()));
         return ResponseEntity.ok().build();
     }
 
-    private Cookie getCSRFTokenCookie(String host) {
-        Cookie cookie = new Cookie("XSRF-TOKEN", UUID.randomUUID().toString());
+    private Cookie getCSRFTokenCookie(String csrfToken) {
+        Cookie cookie = new Cookie("XSRF-TOKEN", csrfToken);
         cookie.setPath("/");
         cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
         return cookie;
@@ -54,7 +52,7 @@ public class AuthenticationController {
         return "Hello Human!";
     }
 
-    private Cookie getJWTTokenCookie(String jwtToken, String host) {
+    private Cookie getJWTTokenCookie(String jwtToken) {
         Cookie cookie = new Cookie("COOKIE_BEARER", jwtToken);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
