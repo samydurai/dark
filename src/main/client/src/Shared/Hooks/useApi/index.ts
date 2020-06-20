@@ -12,8 +12,8 @@ export default function useApi(payload?: Payload) {
     isLoading: false,
     err: null,
   });
-  const { data, url, method } = payload || {};
   useEffect(() => {
+    const { data, url, method } = payload || {};
     if (url && method) {
       setState({ data: null, isLoading: true, err: null });
       axios({
@@ -30,6 +30,6 @@ export default function useApi(payload?: Payload) {
           });
         });
     }
-  }, [url, method, data]);
+  }, [payload]);
   return [state.data, state.err, state.isLoading];
 }

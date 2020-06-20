@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { authHeaders } from "../../utils/Auth";
+import { authHeaders } from "../../Utils/Auth";
 
 export default function ProtectedRoutes(props: any) {
   const Component = props.component;
