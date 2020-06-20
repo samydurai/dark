@@ -7,6 +7,7 @@ import com.darkim.chat.auth.error.MessageKey;
 import com.darkim.chat.auth.error.MessageResolver;
 import com.darkim.chat.auth.jwt.JWTUtil;
 import com.darkim.chat.auth.model.AuthenticationRequest;
+import com.darkim.chat.auth.model.AuthenticationResponse;
 import com.darkim.chat.auth.provider.config.ChatUserDetailsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -79,7 +82,7 @@ public class AuthenticationService {
         userRepository.save(user);
     }
 
-    public String authenticate(AuthenticationRequest authenticationRequest) {
+    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(),
                             authenticationRequest.getPassword()));
@@ -88,6 +91,11 @@ public class AuthenticationService {
             throw new BaseException(MessageKey.INVALID_CREDENTIALS, messageResolver.resolve(MessageKey.INVALID_CREDENTIALS.getKey()));
         }
         UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        return jwtUtil.generateToken(userDetails);
+        String csrfToken = UUID.randomUUID().toString();
+        String jwtToken = jwtUtil.generateToken(userDetails, csrfToken);
+        return AuthenticationResponse.builder()
+                .csrfToken(csrfToken)
+                .token(jwtToken)
+                .build();
     }
 }
