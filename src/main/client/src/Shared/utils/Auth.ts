@@ -1,5 +1,3 @@
-import axios from "axios";
-
 export interface AuthHeaders {
   jwt: string | null;
 }
@@ -21,8 +19,7 @@ function getCookie(cname: any) {
 }
 
 export function setAuthHeader() {
-  const jwt = getCookie("COOKIE_BEARER");
-  axios.defaults.headers["Authorization"] = `Bearer ${jwt}`;
+  const jwt = getCookie("XSRF-TOKEN");
   authHeaders.jwt = jwt;
 }
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import InputAdornment from "@material-ui/core/InputAdornment";
@@ -12,9 +12,9 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 
 export default function Password(props: any) {
   const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => {
+  const handleClickShowPassword = useCallback(() => {
     setShowPassword((showPassword) => !showPassword);
-  };
+  }, []);
   const randomId = uniqueId();
   return (
     <FormControl

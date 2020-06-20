@@ -22,7 +22,13 @@ export default function useApi(payload?: Payload) {
         data,
       })
         .then((data) => setState({ data, isLoading: false, err: null }))
-        .catch((err) => setState({ data: null, isLoading: false, err }));
+        .catch((err) => {
+          setState({
+            data: null,
+            isLoading: false,
+            err: err.response.data.failureReason,
+          });
+        });
     }
   }, [url, method, data]);
   return [state.data, state.err, state.isLoading];

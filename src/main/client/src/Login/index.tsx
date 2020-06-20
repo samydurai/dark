@@ -6,11 +6,11 @@ import { TextInput } from "../Shared/StyledMaterialui";
 import Button from "@material-ui/core/Button";
 import Password from "../Shared/Component/Password";
 import { setAuthHeader } from "../Shared/utils/Auth";
-import useApi from "../Shared/hooks/api";
+import useApi from "../Shared/hooks/useApi";
 import { Method } from "axios";
 import { Redirect } from "react-router-dom";
 
-const url = "/authenticate";
+const url = "/api/authenticate";
 const method: Method = "post";
 
 export default function Login() {
@@ -39,7 +39,7 @@ export default function Login() {
     });
   };
   if (data) {
-    <Redirect to="/chat" />;
+    return <Redirect to="/chat" />;
   }
   return (
     <Page>
@@ -60,13 +60,13 @@ export default function Login() {
         <Button variant="contained" color="primary" onClick={login}>
           <b>Login</b>
         </Button>
-        <br />
-        {err && <ErrorDiv>{err}</ErrorDiv>}
       </StyledPaper>
       <div style={{ marginTop: "10px" }}>
         <LESpan>New User? </LESpan>
         <StyledLink to="/register">Sign Up</StyledLink>
       </div>
+      <br />
+      {err && <ErrorDiv>{err}</ErrorDiv>}
     </Page>
   );
 }
