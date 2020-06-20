@@ -5,7 +5,7 @@ import com.darkim.chat.auth.error.MessageKey;
 import com.darkim.chat.auth.error.MessageResolver;
 import com.darkim.chat.auth.provider.config.ChatUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpHeaders;
+import io.jsonwebtoken.Claims;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,8 +66,12 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                                 userDetails, null, userDetails.getAuthorities());
                         usernamePasswordAuthenticationToken
                                 .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        Claims claims = jwtUtil.extractAllClaims(jwt);
+                        String csrfTokenInJWT = (String) claims.getOrDefault("csrf-token", null);
                         if (serverSetXSRFToken != null && (serverSetXSRFToken.equals(xsrfFromRequestHeader))) {
-                            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                            if (serverSetXSRFToken.equals(csrfTokenInJWT)) {
+                                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                            }
                         }
                     }
                 } catch (Exception e) {
