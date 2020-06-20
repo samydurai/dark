@@ -40,5 +40,10 @@ module.exports = {
   devServer: {
     contentBase: path.join(__dirname, "/public"),
     historyApiFallback: true,
+    port: 8081,
+    compress: true,
+    proxy: {
+      "/api": "http://localhost:8080",
+    },
   },
 };

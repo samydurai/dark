@@ -1,15 +1,16 @@
 import * as React from "react";
 import { useState, ChangeEvent, useEffect } from "react";
 import Button from "@material-ui/core/Button";
-import useApi from "../Shared/hooks/api";
+import useApi from "../Shared/hooks/useApi";
 import { TextInput } from "../Shared/StyledMaterialui";
 import { StyledPaper, Page, ErrorDiv } from "../Shared/StyledComponents";
 import { Method } from "axios";
 import Password from "../Shared/Component/Password";
 import { Redirect } from "react-router-dom";
 import { setAuthHeader } from "../Shared/utils/Auth";
+import useMessage from "../Shared/hooks/useMessagebar";
 
-const url = "/register";
+const url = "/api/register";
 const method: Method = "post";
 const passwordRegex = new RegExp(
   "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$"
@@ -20,6 +21,7 @@ const checkRePassword = (password: string, repassword: string) =>
   password === repassword;
 
 export default function Signup() {
+  const setMessage = useMessage();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
@@ -46,8 +48,9 @@ export default function Signup() {
   useEffect(() => {
     if (!!data) {
       setAuthHeader();
+      setMessage("Registered");
     }
-  }, [data]);
+  }, [data, setMessage]);
   const userIdChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setUserId(e.target.value);
   const passwordChanged = (e: ChangeEvent<HTMLInputElement>) =>
@@ -98,8 +101,9 @@ export default function Signup() {
         <Button onClick={register} variant="contained" color="primary">
           <b>Register</b>
         </Button>
-        {err && <ErrorDiv>{err}</ErrorDiv>}
       </StyledPaper>
+      <br />
+      {err && <ErrorDiv>{err}</ErrorDiv>}
     </Page>
   );
 }
