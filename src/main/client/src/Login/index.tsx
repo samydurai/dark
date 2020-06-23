@@ -1,14 +1,16 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { LESpan, StyledLink } from "./styles";
-import { StyledPaper, Page, ErrorDiv } from "../Shared/StyledComponents";
-import { TextInput } from "../Shared/StyledMaterialui";
-import Button from "@material-ui/core/Button";
-import Password from "../Shared/Component/Password";
-import { setAuthHeader } from "../Shared/utils/Auth";
-import useApi from "../Shared/hooks/useApi";
-import { Method } from "axios";
 import { Redirect } from "react-router-dom";
+import { Method } from "axios";
+import Button from "@material-ui/core/Button";
+import Paper from "../Shared/Component/Paper";
+import BasePage from "../Shared/Component/BasePage";
+import ErrorDiv from "../Shared/Component/ErrorDiv";
+import TextInput from "../Shared/Component/FormTextField";
+import Password from "../Shared/Component/Password";
+import { setAuthHeader } from "../Shared/Utils/Auth";
+import useApi from "../Shared/Hooks/useApi";
+import { LESpan, StyledLink } from "./styles";
 
 const url = "/api/authenticate";
 const method: Method = "post";
@@ -17,18 +19,17 @@ export default function Login() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [payload, setPayload] = useState(null);
-  const [data, err] = useApi(payload);
+  const [hasLoggedIn, err] = useApi(payload);
   const idChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     setId(e.target.value);
   };
-  const passwordChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const passwordChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+  };
   useEffect(() => {
-    if (!!data) {
-      setAuthHeader();
-    }
-  }, [data]);
-  const login = () => {
+    hasLoggedIn && setAuthHeader();
+  }, [hasLoggedIn]);
+  function login() {
     setPayload({
       url,
       method,
@@ -37,13 +38,13 @@ export default function Login() {
         password: password,
       },
     });
-  };
-  if (data) {
+  }
+  if (hasLoggedIn) {
     return <Redirect to="/chat" />;
   }
   return (
-    <Page>
-      <StyledPaper>
+    <BasePage>
+      <Paper>
         <TextInput
           color="secondary"
           label="ID"
@@ -60,13 +61,13 @@ export default function Login() {
         <Button variant="contained" color="primary" onClick={login}>
           <b>Login</b>
         </Button>
-      </StyledPaper>
+      </Paper>
       <div style={{ marginTop: "10px" }}>
         <LESpan>New User? </LESpan>
         <StyledLink to="/register">Sign Up</StyledLink>
       </div>
       <br />
       {err && <ErrorDiv>{err}</ErrorDiv>}
-    </Page>
+    </BasePage>
   );
 }

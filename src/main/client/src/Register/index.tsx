@@ -1,14 +1,16 @@
+import { Method } from "axios";
 import * as React from "react";
 import { useState, ChangeEvent, useEffect } from "react";
-import Button from "@material-ui/core/Button";
-import useApi from "../Shared/hooks/useApi";
-import { TextInput } from "../Shared/StyledMaterialui";
-import { StyledPaper, Page, ErrorDiv } from "../Shared/StyledComponents";
-import { Method } from "axios";
-import Password from "../Shared/Component/Password";
 import { Redirect } from "react-router-dom";
-import { setAuthHeader } from "../Shared/utils/Auth";
-import useMessage from "../Shared/hooks/useMessagebar";
+import Button from "@material-ui/core/Button";
+import useApi from "../Shared/Hooks/useApi";
+import TextInput from "../Shared/Component/FormTextField";
+import Paper from "../Shared/Component/Paper";
+import ErrorDiv from "../Shared/Component/ErrorDiv";
+import BasePage from "../Shared/Component/BasePage";
+import Password from "../Shared/Component/Password";
+import { setAuthHeader } from "../Shared/Utils/Auth";
+import { useShowSnackbar } from "../Shared/Hooks/useSnackbar";
 
 const url = "/api/register";
 const method: Method = "post";
@@ -21,7 +23,7 @@ const checkRePassword = (password: string, repassword: string) =>
   password === repassword;
 
 export default function Signup() {
-  const setMessage = useMessage();
+  const showSnackbar = useShowSnackbar();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
@@ -29,7 +31,7 @@ export default function Signup() {
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [isRePasswordValid, setIsRePasswordValid] = useState(true);
   const [payload, setPayload] = useState(null);
-  const [data, err] = useApi(payload);
+  const [hasRegistered, err] = useApi(payload);
   const register = () => {
     const validId = checkId(userId);
     const validPassword = checkPassword(password);
@@ -46,23 +48,23 @@ export default function Signup() {
     }
   };
   useEffect(() => {
-    if (!!data) {
+    if (hasRegistered) {
       setAuthHeader();
-      setMessage("Registered");
+      showSnackbar("Registered");
     }
-  }, [data, setMessage]);
+  }, [hasRegistered, showSnackbar]);
   const userIdChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setUserId(e.target.value);
   const passwordChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setPassword(e.target.value);
   const repasswordChanged = (e: ChangeEvent<HTMLInputElement>) =>
     setRepassword(e.target.value);
-  if (!!data) {
-    return <Redirect to="/chat" />;
+  if (hasRegistered) {
+    return <Redirect to="/login" />;
   }
   return (
-    <Page>
-      <StyledPaper>
+    <BasePage>
+      <Paper>
         <TextInput
           variant="outlined"
           label="User ID"
@@ -101,9 +103,9 @@ export default function Signup() {
         <Button onClick={register} variant="contained" color="primary">
           <b>Register</b>
         </Button>
-      </StyledPaper>
+      </Paper>
       <br />
       {err && <ErrorDiv>{err}</ErrorDiv>}
-    </Page>
+    </BasePage>
   );
 }
