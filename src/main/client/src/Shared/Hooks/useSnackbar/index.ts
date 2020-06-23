@@ -5,14 +5,14 @@ import { Message } from "../../Context/Message";
 export function useShowSnackbar() {
   const setSnackbarState = useContext(Message);
   const showSnackbar = (message: string) => {
-    setSnackbarState((state: any) => ({ ...state, message, open: true }));
+    setSnackbarState((state) => ({ ...state, message, open: true }));
   };
   return showSnackbar;
 }
 
 export function useInitSnackbar() {
   const handleClose = useCallback(() => {
-    setSnackbarState((state: SnackbarProps) => ({ ...state, open: false }));
+    setSnackbarState((state) => ({ ...state, open: false }));
   }, []);
   const initState: SnackbarProps = {
     open: false,
@@ -23,5 +23,5 @@ export function useInitSnackbar() {
     SnackbarProps,
     React.Dispatch<React.SetStateAction<SnackbarProps>>
   ] = useState(initState);
-  return [snackbarState, setSnackbarState];
+  return { snackbarState, setSnackbarState };
 }
