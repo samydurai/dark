@@ -1,34 +1,31 @@
 import * as React from "react";
-import { lazy, Suspense, useMemo, useState, useCallback } from "react";
+import { lazy, Suspense, useMemo } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
 import { ThemeProvider } from "@material-ui/core/styles";
 import Snackbar from "@material-ui/core/Snackbar";
-import Chat from "../Chat";
-import { darkTheme } from "./theme";
+
 import GlobalStyles from "../Shared/styles";
+import { useInitSnackbar } from "../Shared/Hooks/useSnackbar";
 import ProtectedRoutes from "../Shared/Component/ProtectedRoute";
+import Loader from "../Shared/Component/Loader";
 import { MessageProvider } from "../Shared/Context/Message";
-import { setAuthHeader } from "../Shared/utils/Auth";
+import { setAuthHeader } from "../Shared/Utils/Auth";
+import { darkTheme } from "./theme";
 
 const Login = lazy(() => import("../Login"));
-const Register = lazy(() => import("../Signup"));
+const Register = lazy(() => import("../Register"));
+const Chat = lazy(() => import("../Chat"));
 
 export default function App() {
-  const handleClose = useCallback(() => {
-    setSnackbarState((state) => ({ ...state, open: false }));
-  }, []);
-  const [snackbarState, setSnackbarState] = useState({
-    open: false,
-    onClose: handleClose,
-    autoHideDuration: 4000,
-  });
+  const { snackbarState, setSnackbarState } = useInitSnackbar();
   useMemo(setAuthHeader, []);
   return (
     <MessageProvider value={setSnackbarState}>
       <ThemeProvider theme={darkTheme}>
         <GlobalStyles></GlobalStyles>
         <Router>
-          <Suspense fallback={<div>loading</div>}>
+          <Suspense fallback={<Loader />}>
             <Switch>
               <Route path="/login" component={Login}></Route>
               <Route path="/register" component={Register} />
