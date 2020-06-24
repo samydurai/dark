@@ -1,16 +1,20 @@
 import { Client } from "@stomp/stompjs";
 import { authHeaders } from "../Auth";
 
+declare const SockJS: any;
+
 let client: Client = null;
 
 export function startChatConnection() {
   client = new Client({
-    brokerURL: `ws://${window.location.host}/chat`,
     connectHeaders: {
       "CSRF-TOKEN": authHeaders.XSRF,
     },
     debug: function (str) {
       console.log(str);
+    },
+    webSocketFactory: () => {
+      return new SockJS(`ws://${window.location.host}/chat`);
     },
     reconnectDelay: 5000,
     heartbeatIncoming: 4000,

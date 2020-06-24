@@ -9,11 +9,11 @@ export const ChatPage = styled.div`
 `;
 
 export const StyledChatScreen = styled(ChatScreen)`
-  flex: 0 0 70%;
+  flex: 0 0 80%;
 `;
 
 export const StyledWatchList = styled(WatchList)`
-  flex: 0 0 30%;
+  flex: 0 0 20%;
   height: 100%;
-  max-width: 30%;
+  max-width: 20%;
 `;
