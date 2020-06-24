@@ -4,15 +4,14 @@ import { useState } from "react";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Paper from "@material-ui/core/Paper";
-import Button, { ButtonProps } from "@material-ui/core/Button";
 
 import ChatTab from "./ChatTab";
 
-const TabHeader = React.forwardRef(function TabName(props: ButtonProps, ref) {
+const TabHeader = React.forwardRef(function TabName(props, ref) {
   return (
-    <Button ref={ref as any} {...props}>
+    <Paper ref={ref as any} {...props}>
       Raiden
-    </Button>
+    </Paper>
   );
 });
 
