@@ -63,7 +63,7 @@ public class SecurityProviderConfig extends WebSecurityConfigurerAdapter {
                 .cacheControl()
                 .and()
                 .frameOptions()
-                .and()
+                .sameOrigin()
                 .contentTypeOptions();
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

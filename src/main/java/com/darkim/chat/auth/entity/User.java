@@ -1,8 +1,10 @@
 package com.darkim.chat.auth.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import java.time.Instant;
 
 @Entity
 @Table(name = "user")
@@ -26,4 +28,8 @@ public class User {
 
     @Column(name = "is_active")
     private boolean active;
+
+    @CreationTimestamp
+    @Column(name = "created_at")
+    private Instant createdAt;
 }
