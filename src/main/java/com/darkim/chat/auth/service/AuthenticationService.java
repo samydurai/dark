@@ -1,4 +1,4 @@
-package com.darkim.chat.auth;
+package com.darkim.chat.auth.service;
 
 import com.darkim.chat.auth.dao.UserRepository;
 import com.darkim.chat.auth.entity.User;
