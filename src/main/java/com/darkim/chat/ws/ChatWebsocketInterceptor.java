@@ -4,12 +4,14 @@ import com.darkim.chat.auth.jwt.JWTUtil;
 import com.darkim.chat.auth.provider.config.ChatUserDetailsService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -41,8 +43,8 @@ public class ChatWebsocketInterceptor implements ChannelInterceptor {
             Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
             String jwt = (String) sessionAttributes.get("jwtToken");
             String serverSetXSRFToken = (String) sessionAttributes.get("xsrfToken");
-            List<String> authorization = accessor.getNativeHeader("Authorization");
-            String xsrfFromRequestHeader = authorization.get(0).substring(7);
+            List<String> authorization = accessor.getNativeHeader("CSRF-TOKEN");
+            String xsrfFromRequestHeader = authorization.get(0);
             String username = jwtUtil.extractUsername(jwt);
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             if (jwtUtil.validateToken(jwt, userDetails)) {
@@ -54,7 +56,11 @@ public class ChatWebsocketInterceptor implements ChannelInterceptor {
                     if (serverSetXSRFToken.equals(csrfTokenInJWT)) {
                         accessor.setUser(usernamePasswordAuthenticationToken);
                     }
+                } else {
+                    throw new BadCredentialsException("Please login to chat.");
                 }
+            } else {
+                throw new BadCredentialsException("Please login to chat.");
             }
         }
         return message;
