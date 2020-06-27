@@ -51,6 +51,7 @@ export default function Login() {
           variant="outlined"
           value={id}
           onChange={idChanged}
+          spellCheck={false}
         ></TextInput>
         <Password
           label="Password"
@@ -58,7 +59,7 @@ export default function Login() {
           onChange={passwordChanged}
           value={password}
         ></Password>
-        <Button variant="contained" color="primary" onClick={login}>
+        <Button color="primary" onClick={login}>
           <b>Login</b>
         </Button>
       </Paper>

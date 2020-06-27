@@ -14,6 +14,7 @@ const BaseLoader = styled(PawPrints)`
       fill: white;
     }
   }
+  fill: ${backgroundColor};
   transform: rotate(0.25turn);
   animation: pulse 1s infinite;
   animation-direction: alternate;

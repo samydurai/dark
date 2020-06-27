@@ -17,3 +17,8 @@ export const StyledWatchList = styled.div`
 export const Search = styled(TextField)`
   flex: 0 0 auto;
 `;
+
+export const StyledWatchListHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;

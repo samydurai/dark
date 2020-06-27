@@ -33,8 +33,11 @@ export function startChatConnection() {
     console.log("Additional details: " + frame.body);
   };
   client.activate();
+  client.subscribe("/user/queue/reply", (message) => console.log(message));
 }
 
 export function closeChatConnection() {
   client.deactivate();
 }
+
+export { client };
