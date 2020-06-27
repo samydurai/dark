@@ -24,6 +24,9 @@ export function startChatConnection() {
   client.onConnect = function (frame) {
     console.log(frame);
   };
+  client.subscribe("/user/queue/reply", function (message) {
+    console.log(message);
+  })
 
   client.onStompError = function (frame) {
     console.log("Broker reported error: " + frame.headers["message"]);

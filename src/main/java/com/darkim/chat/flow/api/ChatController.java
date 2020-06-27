@@ -1,13 +1,16 @@
 package com.darkim.chat.flow.api;
 
 import com.darkim.chat.flow.service.ChatFlowService;
+import com.darkim.chat.flow.service.UserIgnoreRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RequestMapping("/api")
+@RestController
 public class ChatController {
 
     private ChatFlowService chatFlowService;
@@ -17,8 +20,14 @@ public class ChatController {
         this.chatFlowService = chatFlowService;
     }
 
-    @RequestMapping(path = "/user/{userId}/check", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/user/{userId}/check", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)
     public ResponseEntity<Boolean> isUserExists(@PathVariable("userId") String userId) {
         return ResponseEntity.ok(chatFlowService.isUserExists(userId));
+    }
+
+    @RequestMapping(path = "/user/{userId}/ignore", method = RequestMethod.POST)
+    public ResponseEntity<Void> ignoreUsers(@PathVariable("userId") String userId, @RequestBody UserIgnoreRequest userIgnoreRequest) {
+        chatFlowService.ignoreUsers(userId, userIgnoreRequest);
+        return ResponseEntity.ok().build();
     }
 }

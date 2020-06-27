@@ -1,4 +1,4 @@
-package com.darkim.chat.ws;
+package com.darkim.chat.ws.config;
 
 import com.darkim.chat.auth.jwt.JWTUtil;
 import com.darkim.chat.auth.provider.config.ChatUserDetailsService;

@@ -71,7 +71,7 @@ public class SecurityProviderConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/api/authenticate", "/api/register");
+        web.ignoring().antMatchers("/api/authenticate", "/api/register", "/api/user/**");
     }
 
     @Override
