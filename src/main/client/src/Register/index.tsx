@@ -72,6 +72,7 @@ export default function Signup() {
           onChange={userIdChanged}
           color="secondary"
           helperText={isIdValid ? "" : "Required"}
+          spellCheck={false}
           error={!isIdValid}
         ></TextInput>
         <Password
@@ -100,7 +101,7 @@ export default function Signup() {
               : "Those Passwords don't match. Please try again"
           }
         ></Password>
-        <Button onClick={register} variant="contained" color="primary">
+        <Button onClick={register} color="primary">
           <b>Register</b>
         </Button>
       </Paper>
