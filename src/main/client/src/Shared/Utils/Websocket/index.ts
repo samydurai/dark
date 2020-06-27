@@ -23,6 +23,7 @@ export function startChatConnection() {
 
   client.onConnect = function (frame) {
     console.log(frame);
+    client.subscribe("/user/queue/reply", (message) => console.log(message));
   };
 
   client.onStompError = function (frame) {
@@ -30,7 +31,6 @@ export function startChatConnection() {
     console.log("Additional details: " + frame.body);
   };
   client.activate();
-  client.subscribe("/user/queue/reply", (message) => console.log(message));
 }
 
 export function closeChatConnection() {
