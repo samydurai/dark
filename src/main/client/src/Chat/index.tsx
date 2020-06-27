@@ -9,7 +9,9 @@ import {
 
 import { StyledChatScreen, StyledWatchList, ChatPage } from "./styles";
 
-const users = ["raiden", "raigor", "stonehoof", "elzaroth"];
+function openChatWindow(userId: string) {
+  console.log(`${userId} clicked`);
+}
 
 function Chat() {
   useEffect(() => {
@@ -19,7 +21,7 @@ function Chat() {
   return (
     <ChatPage>
       <StyledChatScreen></StyledChatScreen>
-      <StyledWatchList watchListUsers={users}></StyledWatchList>
+      <StyledWatchList openChatWindow={openChatWindow}></StyledWatchList>
     </ChatPage>
   );
 }
