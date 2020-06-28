@@ -1,10 +1,12 @@
 package com.darkim.chat.auth.entity;
 
+import com.darkim.chat.flow.model.UserChatPreference;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -16,11 +18,7 @@ import java.time.Instant;
 public class User {
 
     @Id
-    @SequenceGenerator(name = "user_seq", sequenceName = "user_seq", allocationSize = 100, initialValue = 100000)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-
-    @Column(name = "user_name", unique = true)
+    @Column(name = "username", unique = true)
     private String userName;
 
     @Column(name = "password")
@@ -32,4 +30,7 @@ public class User {
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @OneToMany(targetEntity = UserChatPreference.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<UserChatPreference> userPreferences;
 }
