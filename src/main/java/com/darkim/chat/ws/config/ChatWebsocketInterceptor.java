@@ -4,7 +4,6 @@ import com.darkim.chat.auth.jwt.JWTUtil;
 import com.darkim.chat.auth.provider.config.ChatUserDetailsService;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;

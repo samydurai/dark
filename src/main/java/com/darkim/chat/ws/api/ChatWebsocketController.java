@@ -3,10 +3,8 @@ package com.darkim.chat.ws.api;
 import com.darkim.chat.ws.model.ChatMessage;
 import com.darkim.chat.ws.model.ConvertedChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
@@ -33,7 +31,7 @@ public class ChatWebsocketController {
                 .convertAndSendToUser(convertedChatMessage.getTo(), "/queue/reply", convertedChatMessage);
     }
 
-    @Scheduled(fixedDelay = 5000)
+    /*@Scheduled(fixedDelay = 5000)
     public void sendMessage() {
         ConvertedChatMessage convertedChatMessage = ConvertedChatMessage.builder()
                 .from("qwerty")
@@ -41,7 +39,7 @@ public class ChatWebsocketController {
                 .message("Hello man!")
                 .build();
         simpMessagingTemplate
-                .convertAndSendToUser("qwerty", "/queue/reply", convertedChatMessage);
+                .convertAndSendToUser("qwerty", "/queue/reply", convertedChatMessage);*/
     }
 
     /*@MessageExceptionHandler

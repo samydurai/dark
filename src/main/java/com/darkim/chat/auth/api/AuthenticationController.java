@@ -1,8 +1,8 @@
 package com.darkim.chat.auth.api;
 
-import com.darkim.chat.auth.service.AuthenticationService;
 import com.darkim.chat.auth.model.AuthenticationRequest;
 import com.darkim.chat.auth.model.AuthenticationResponse;
+import com.darkim.chat.auth.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
