@@ -1,11 +1,20 @@
 package com.darkim.chat.flow.dao;
 
+import com.darkim.chat.auth.entity.User;
 import com.darkim.chat.flow.model.UserChatPreference;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface UserChatPreferenceRepository extends JpaRepository<UserChatPreference, Long> {
 
+    @Query("select up.entity.userName from UserChatPreference up where up.user.userName = :username and up.type='IGNORE'")
+    Set<String> getAllIgnoredUsers(String username);
 
+    @Query("select up from UserChatPreference up where up.user.userName = :username and up.entity.userName in :usersToBeEnabled and up.type = 'IGNORE'")
+    Set<UserChatPreference> getUsersToBeEnabled(String username, Set<String> usersToBeEnabled);
 }

@@ -18,7 +18,7 @@ public class UserChatPreference {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "username")
     private User user;
 
@@ -29,4 +29,12 @@ public class UserChatPreference {
     @ManyToOne
     @JoinColumn(name = "entity_id", referencedColumnName = "username")
     private User entity;
+
+    public static UserChatPreference from(User user, User ignore, PreferenceType type) {
+        return UserChatPreference.builder()
+                .user(user)
+                .type(type)
+                .entity(ignore)
+                .build();
+    }
 }
