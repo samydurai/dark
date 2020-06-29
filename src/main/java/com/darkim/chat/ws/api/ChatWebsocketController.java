@@ -39,10 +39,10 @@ public class ChatWebsocketController {
                 .message("Hello man!")
                 .build();
         simpMessagingTemplate
-                .convertAndSendToUser("qwerty", "/queue/reply", convertedChatMessage);*/
+                .convertAndSendToUser("qwerty", "/queue/reply", convertedChatMessage);
     }
 
-    /*@MessageExceptionHandler
+    @MessageExceptionHandler
     @SendToUser(value="/queue/errors", broadcast=false)
     public ApplicationError handleException(MyBusinessException exception) {
         // ...
