@@ -1,11 +1,33 @@
 import * as React from "react";
 
-export default function ChatTab(props: any) {
-  const { value, index, userId } = props;
+import { Message } from "../../../Shared/Hooks/useChatState";
+
+import UserMessage from "./Message";
+import MessageInput from "./MessageInput";
+import { StyledChatTab, MessageContainer } from "./styles";
+
+export default function ChatTab(props: ChatTabProps) {
+  const { value, userId, messages, sendMessage } = props;
+
+  if (value !== userId) {
+    return null;
+  }
 
   return (
-    <div role="tabpanel" hidden={value !== index}>
-      {value === index && <div>{userId}</div>}
-    </div>
+    <StyledChatTab role="tabpanel" hidden={value !== userId}>
+      <MessageContainer>
+        {messages.map((message, index) => (
+          <UserMessage key={index} message={message} />
+        ))}
+      </MessageContainer>
+      <MessageInput sendMessage={sendMessage} userId={userId}></MessageInput>
+    </StyledChatTab>
   );
+}
+
+interface ChatTabProps {
+  value: string;
+  userId: string;
+  messages: Message[];
+  sendMessage: (m: Message) => void;
 }
