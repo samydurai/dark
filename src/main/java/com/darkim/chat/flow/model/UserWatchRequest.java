@@ -1,4 +1,4 @@
-package com.darkim.chat.flow.service;
+package com.darkim.chat.flow.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,9 +10,9 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserIgnoreRequest {
+public class UserWatchRequest {
 
-    private Set<String> ignoreUsers = new HashSet<>();
+    private Set<String> watch = new HashSet<>();
 
-    private Set<String> enableUsers = new HashSet<>();
+    private Set<String> unwatch = new HashSet<>();
 }

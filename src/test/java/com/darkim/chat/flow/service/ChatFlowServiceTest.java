@@ -4,15 +4,13 @@ import com.darkim.chat.auth.dao.UserRepository;
 import com.darkim.chat.auth.entity.User;
 import com.darkim.chat.auth.error.MessageResolver;
 import com.darkim.chat.flow.dao.UserChatPreferenceRepository;
-import com.darkim.chat.flow.model.UserChatPreference;
+import com.darkim.chat.flow.model.UserIgnoreRequest;
 import net.bytebuddy.utility.RandomString;
 import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
@@ -22,7 +20,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.springframework.test.annotation.DirtiesContext.*;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @SpringBootTest
@@ -126,6 +123,17 @@ public class ChatFlowServiceTest {
         Assert.assertEquals(users.size() - usersToEnable.size() + 1, allIgnoredUsersFromStore.size());
         Assert.assertEquals(expectedIgnoredUsers.size(), allIgnoredUsersFromStore.size());
         Assert.assertTrue(allIgnoredUsersFromStore.containsAll(expectedIgnoredUsers));
+    }
+
+    @Test
+    public void netEffectMustBeDeleteIfUsernamePresentBothInIgnoreAndEnable() {
+        List<User> users = createMockUsers();
+        String loggedInUser = getLoggedInUser(users);
+        UserIgnoreRequest userIgnoreRequest = getUserIgnoreRequest(users, loggedInUser);
+        userIgnoreRequest.setEnableUsers(userIgnoreRequest.getIgnoreUsers());
+        chatFlowService.ignoreUsers(loggedInUser, userIgnoreRequest);
+        Set<String> allIgnoredUsersFromStore = userChatPreferenceRepository.getAllIgnoredUsers(loggedInUser);
+        Assert.assertTrue(allIgnoredUsersFromStore.isEmpty());
     }
 
 
