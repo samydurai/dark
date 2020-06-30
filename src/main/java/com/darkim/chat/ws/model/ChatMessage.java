@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class ChatMessage {
 
-    private String toUser;
+    private String to;
 
     private String message;
 }

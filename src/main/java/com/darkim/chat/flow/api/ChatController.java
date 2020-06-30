@@ -1,5 +1,6 @@
 package com.darkim.chat.flow.api;
 
+import com.darkim.chat.flow.model.UserProfile;
 import com.darkim.chat.flow.model.UserWatchRequest;
 import com.darkim.chat.flow.service.ChatFlowService;
 import com.darkim.chat.flow.model.UserIgnoreRequest;
@@ -36,5 +37,13 @@ public class ChatController {
     public ResponseEntity<Void> watchUsers(Principal principal, @RequestBody UserWatchRequest userWatchRequest) {
         chatFlowService.watchUsers(principal.getName(), userWatchRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(path = "/profile", method = RequestMethod.GET)
+    public ResponseEntity<UserProfile> loadUserProfile(Principal principal) {
+        UserProfile userProfile = UserProfile.builder()
+                .username(principal.getName())
+                .build();
+        return ResponseEntity.ok(userProfile);
     }
 }
