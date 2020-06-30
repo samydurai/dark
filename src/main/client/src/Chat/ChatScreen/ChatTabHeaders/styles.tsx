@@ -5,9 +5,10 @@ import Close from "@material-ui/icons/Close";
 
 export const StyledPaperHeader = styled(Paper)({
   "justify-content": "space-between",
+  "text-transform": "none",
 });
 
 export const StyledCloseIcon = styled(Close)({
-  height: "0.75em",
-  widht: "0.75em",
+  height: "0.5em",
+  width: "0.5em",
 });
