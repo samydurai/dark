@@ -5,7 +5,6 @@ import com.darkim.chat.ws.model.ConvertedChatMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -24,7 +23,7 @@ public class ChatWebsocketController {
     public void sendMessage(ChatMessage chatMessage, Principal principal) {
         ConvertedChatMessage convertedChatMessage = ConvertedChatMessage.builder()
                 .from(principal.getName())
-                .to(chatMessage.getToUser())
+                .to(chatMessage.getTo())
                 .message(chatMessage.getMessage())
                 .build();
         simpMessagingTemplate
