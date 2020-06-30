@@ -35,16 +35,19 @@ export default function WatchList({
     []
   );
 
-  const renderList = useCallback((users: string[]) => {
-    return users.map((user) => (
-      <Item
-        key={user}
-        userId={user}
-        removeFn={removeUserFromWatchList}
-        openChatWindow={openChatWindow}
-      />
-    ));
-  }, []);
+  const renderList = useCallback(
+    (users: string[]) => {
+      return users.map((user) => (
+        <Item
+          key={user}
+          userId={user}
+          removeFn={removeUserFromWatchList}
+          openChatWindow={openChatWindow}
+        />
+      ));
+    },
+    [openChatWindow, removeUserFromWatchList]
+  );
 
   return (
     <StyledWatchList className={className}>
