@@ -45,7 +45,7 @@ export function closeChatConnection() {
 
 export function sendMessage(message: Message) {
   client.publish({
-    destination: "/topic/general",
+    destination: "/queue/chat",
     body: JSON.stringify(message),
   });
 }
