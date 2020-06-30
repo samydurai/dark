@@ -1,19 +1,24 @@
 import * as React from "react";
 import { forwardRef, useMemo } from "react";
 
-import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
 import Tab from "@material-ui/core/Tab";
+
+import { StyledPaperHeader, StyledCloseIcon } from "./styles";
 
 export default function TabHeader(tabProps: ChatTabHeaderProps) {
   const ModifiedTab = useMemo(() => {
     return forwardRef(function Header(props, ref) {
       return (
-        <Paper ref={ref} {...props}>
+        <StyledPaperHeader ref={ref} {...props}>
           {tabProps.userId}
-        </Paper>
+          <IconButton onClick={tabProps.closeTab.bind(this, tabProps.userId)}>
+            <StyledCloseIcon />
+          </IconButton>
+        </StyledPaperHeader>
       );
     });
-  }, [tabProps.userId]);
+  }, [tabProps.userId, tabProps.closeTab]);
   return <Tab component={ModifiedTab} {...tabProps} value={tabProps.userId} />;
 }
 

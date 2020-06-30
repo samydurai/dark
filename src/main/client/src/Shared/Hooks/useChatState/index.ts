@@ -28,7 +28,7 @@ interface PageAction {
 }
 
 const inintalState: PageState = {
-  tabs: ["raiden", "rofl"],
+  tabs: [],
   messages: {},
 };
 
@@ -91,12 +91,19 @@ export default function useChatState() {
 
   const recieveMessage = useCallback(
     (message: Message) => {
+      const fromUser = message.from;
+      if (!state.tabs.find((user) => user === fromUser)) {
+        dispatch({
+          action: Actions.OPEN,
+          tab: fromUser,
+        });
+      }
       dispatch({
         action: Actions.MESSAGE_RECIEVED,
         message: message,
       });
     },
-    [dispatch]
+    [dispatch, state.tabs]
   );
 
   return {

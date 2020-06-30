@@ -9,12 +9,12 @@ import { StyledChatTab, MessageContainer } from "./styles";
 export default function ChatTab(props: ChatTabProps) {
   const { value, userId, messages, sendMessage } = props;
 
-  if (value !== userId) {
-    return null;
-  }
-
   return (
-    <StyledChatTab role="tabpanel" hidden={value !== userId}>
+    <StyledChatTab
+      role="tabpanel"
+      hidden={value !== userId}
+      style={{ display: value === userId ? "flex" : "none" }}
+    >
       <MessageContainer>
         {messages.map((message, index) => (
           <UserMessage key={index} message={message} />
