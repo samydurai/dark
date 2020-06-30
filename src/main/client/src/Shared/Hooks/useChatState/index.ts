@@ -28,7 +28,7 @@ interface PageAction {
 }
 
 const inintalState: PageState = {
-  tabs: ["raiden"],
+  tabs: [],
   messages: {},
 };
 
