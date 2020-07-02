@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tabs from "@material-ui/core/Tabs";
 
 import { useShowSnackbar } from "../../Shared/Hooks/useSnackbar";
-import { PageState, Message } from "../../Shared/Hooks/useChatState";
+import { PageState, Message, Tab } from "../../Shared/Hooks/useChatState";
 
 import ChatTab from "./ChatTab";
 import ChatTabHeader from "./ChatTabHeaders";
@@ -18,8 +18,8 @@ const AddPerson = lazy(() => import("./AddPerson"));
 interface ChatWindowProps {
   className?: string;
   state: PageState;
-  openChatWindow: (u: string) => void;
-  closeChatWindow: (u: string) => void;
+  openChatWindow: (u: Tab) => void;
+  closeChatWindow: (u: Tab) => void;
   sendMessage: (m: Message) => void;
 }
 
@@ -46,7 +46,10 @@ export default function ChatWindow({
     (userId: string) => {
       console.info(`${userId} added to chate`);
       if (typeof userId === "string" && userId) {
-        openChatWindow(userId);
+        openChatWindow({
+          userId,
+          hasNewMessage: false,
+        });
         changeCurrentTab(userId);
       } else {
         showSnackBar("user doesnt eixist");
@@ -64,12 +67,12 @@ export default function ChatWindow({
           onChange={handleTabChange}
           variant="scrollable"
         >
-          {state.tabs.map((userId) => (
+          {state.tabs.map((tab, index) => (
             <ChatTabHeader
-              key={userId}
-              userId={userId}
+              key={index}
+              tab={tab}
               closeTab={closeChatWindow}
-              value={userId}
+              value={tab.userId}
             />
           ))}
         </Tabs>
@@ -80,13 +83,13 @@ export default function ChatWindow({
       {state.tabs.length === 0 ? (
         <EmptyState openDialog={openDialog} />
       ) : (
-        state.tabs.map((userId, index) => {
-          const messages = state.messages[userId] || [];
+        state.tabs.map((tab, index) => {
+          const messages = state.messages[tab.userId] || [];
           return (
             <ChatTab
               value={currentTab}
               key={index}
-              userId={userId}
+              userId={tab.userId}
               messages={messages}
               sendMessage={sendMessage}
             ></ChatTab>
