@@ -5,25 +5,28 @@ import IconButton from "@material-ui/core/IconButton";
 import Tab from "@material-ui/core/Tab";
 
 import { StyledPaperHeader, StyledCloseIcon } from "./styles";
+import { Tab as TabProp } from "../../../Shared/Hooks/useChatState";
 
 export default function TabHeader(tabProps: ChatTabHeaderProps) {
   const ModifiedTab = useMemo(() => {
     return forwardRef(function Header(props, ref) {
       return (
         <StyledPaperHeader ref={ref} {...props}>
-          {tabProps.userId}
-          <IconButton onClick={tabProps.closeTab.bind(this, tabProps.userId)}>
+          {tabProps.tab.userId}
+          <IconButton onClick={tabProps.closeTab.bind(this, tabProps.tab)}>
             <StyledCloseIcon />
           </IconButton>
         </StyledPaperHeader>
       );
     });
-  }, [tabProps.userId, tabProps.closeTab]);
-  return <Tab component={ModifiedTab} {...tabProps} value={tabProps.userId} />;
+  }, [tabProps.tab, tabProps.closeTab]);
+  return (
+    <Tab component={ModifiedTab} {...tabProps} value={tabProps.tab.userId} />
+  );
 }
 
 interface ChatTabHeaderProps {
-  userId: string;
-  closeTab: (u: string) => void;
-  [key: string]: any;
+  tab: TabProp;
+  closeTab: (u: TabProp) => void;
+  value: string;
 }

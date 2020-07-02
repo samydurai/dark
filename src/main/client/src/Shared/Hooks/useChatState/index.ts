@@ -9,8 +9,13 @@ export interface Message {
   timestamp: string;
 }
 
+export interface Tab {
+  userId: string;
+  hasNewMessage: boolean;
+}
+
 export interface PageState {
-  tabs: string[];
+  tabs: Tab[];
   messages: {
     [key: string]: Message[] | void;
   };
@@ -20,10 +25,12 @@ enum Actions {
   OPEN,
   CLOSE,
   MESSAGE_RECIEVED,
+  MESSAGE_SENT,
+  CLEAR_NEW,
 }
 interface PageAction {
   action: Actions;
-  tab?: string;
+  tab?: Tab;
   message?: Message;
 }
 
@@ -38,18 +45,34 @@ function reducer(state: PageState, action: PageAction): PageState {
       state.tabs.push(action.tab);
       return { ...state, tabs: state.tabs };
     case Actions.CLOSE:
-      const filteredTabs = state.tabs.filter((id) => action.tab !== id);
+      const filteredTabs = state.tabs.filter(
+        (tab) => action.tab.userId !== tab.userId
+      );
       return { ...state, tabs: filteredTabs };
     case Actions.MESSAGE_RECIEVED:
-      const currentUserMessages = state.messages[action.message.to] || [];
-      currentUserMessages.push(action.message);
+      const recievedMessage = state.messages[action.message.from] || [];
+      recievedMessage.push(action.message);
       return {
         ...state,
         messages: {
           ...state.messages,
-          [action.message.to]: currentUserMessages,
+          [action.message.from]: recievedMessage,
         },
       };
+    case Actions.MESSAGE_SENT:
+      const sentMessage = state.messages[action.message.to] || [];
+      sentMessage.push(action.message);
+      return {
+        ...state,
+        messages: {
+          ...state.messages,
+          [action.message.to]: sentMessage,
+        },
+      };
+    case Actions.CLEAR_NEW:
+      if (action.tab.hasNewMessage === false) {
+        return state;
+      }
     default:
       return state;
   }
@@ -59,20 +82,20 @@ export default function useChatState() {
   const [state, dispatch] = useReducer(reducer, inintalState);
 
   const openChatWindow = useCallback(
-    (userId: string): void => {
+    (tab: Tab): void => {
       dispatch({
         action: Actions.OPEN,
-        tab: userId,
+        tab,
       });
     },
     [dispatch]
   );
 
   const closeChatWindow = useCallback(
-    (userId: string) => {
+    (tab: Tab) => {
       dispatch({
         action: Actions.CLOSE,
-        tab: userId,
+        tab,
       });
     },
     [dispatch]
@@ -81,7 +104,7 @@ export default function useChatState() {
   const sendMessage = useCallback(
     (message: Message) => {
       dispatch({
-        action: Actions.MESSAGE_RECIEVED,
+        action: Actions.MESSAGE_SENT,
         message: message,
       });
       sendWebsocketMessage(message);
@@ -92,10 +115,13 @@ export default function useChatState() {
   const recieveMessage = useCallback(
     (message: Message) => {
       const fromUser = message.from;
-      if (!state.tabs.find((user) => user === fromUser)) {
+      if (!state.tabs.find((user) => user.userId === fromUser)) {
         dispatch({
           action: Actions.OPEN,
-          tab: fromUser,
+          tab: {
+            userId: fromUser,
+            hasNewMessage: true,
+          },
         });
       }
       dispatch({

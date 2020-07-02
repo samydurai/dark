@@ -11,13 +11,14 @@ import {
   Search,
   StyledWatchListHeader,
 } from "./styles";
+import { Tab } from "../../Shared/Hooks/useChatState";
 
 export default function WatchList({
   className,
   openChatWindow,
 }: {
   className?: string;
-  openChatWindow: (userId: string) => void;
+  openChatWindow: (tab: Tab) => void;
 }) {
   const [users, setUsers] = useState([
     "raiden",
