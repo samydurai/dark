@@ -11,13 +11,14 @@ import {
   Search,
   StyledWatchListHeader,
 } from "./styles";
+import { Tab } from "../../Shared/Hooks/useChatState";
 
 export default function WatchList({
   className,
   openChatWindow,
 }: {
   className?: string;
-  openChatWindow: (userId: string) => void;
+  openChatWindow: (tab: Tab) => void;
 }) {
   const [users, setUsers] = useState([
     "raiden",
@@ -35,16 +36,19 @@ export default function WatchList({
     []
   );
 
-  const renderList = useCallback((users: string[]) => {
-    return users.map((user) => (
-      <Item
-        key={user}
-        userId={user}
-        removeFn={removeUserFromWatchList}
-        openChatWindow={openChatWindow}
-      />
-    ));
-  }, []);
+  const renderList = useCallback(
+    (users: string[]) => {
+      return users.map((user) => (
+        <Item
+          key={user}
+          userId={user}
+          removeFn={removeUserFromWatchList}
+          openChatWindow={openChatWindow}
+        />
+      ));
+    },
+    [openChatWindow, removeUserFromWatchList]
+  );
 
   return (
     <StyledWatchList className={className}>

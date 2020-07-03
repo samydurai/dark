@@ -10,6 +10,9 @@ export const ChatPage = styled.div`
 
 export const StyledChatScreen = styled(ChatScreen)`
   flex: 0 0 80%;
+  display: flex;
+  flex-flow: column;
+  max-width: 80%;
 `;
 
 export const StyledWatchList = styled(WatchList)`

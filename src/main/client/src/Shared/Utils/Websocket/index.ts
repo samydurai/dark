@@ -1,11 +1,15 @@
 import { Client } from "@stomp/stompjs";
+
 import { authHeaders } from "../Auth";
+import { Message } from "../../Hooks/useChatState";
 
 declare const SockJS: any;
 
 let client: Client = null;
 
-export function startChatConnection() {
+export function startChatConnection(
+  messageCallback: (message: Message) => void
+) {
   client = new Client({
     connectHeaders: {
       "CSRF-TOKEN": authHeaders.XSRF,
@@ -23,7 +27,9 @@ export function startChatConnection() {
 
   client.onConnect = function (frame) {
     console.log(frame);
-    client.subscribe("/user/queue/reply", (message) => console.log(message));
+    client.subscribe("/user/queue/reply", (message) =>
+      messageCallback(JSON.parse(message.body))
+    );
   };
 
   client.onStompError = function (frame) {
@@ -35,6 +41,13 @@ export function startChatConnection() {
 
 export function closeChatConnection() {
   client.deactivate();
+}
+
+export function sendMessage(message: Message) {
+  client.publish({
+    destination: "/app/chat",
+    body: JSON.stringify(message),
+  });
 }
 
 export { client };

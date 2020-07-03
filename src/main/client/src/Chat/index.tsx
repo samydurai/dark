@@ -2,6 +2,7 @@ import * as React from "react";
 import { useEffect } from "react";
 
 import withNavbar from "../Shared/Component/NavBar";
+import useChatState from "../Shared/Hooks/useChatState";
 import {
   startChatConnection,
   closeChatConnection,
@@ -9,18 +10,26 @@ import {
 
 import { StyledChatScreen, StyledWatchList, ChatPage } from "./styles";
 
-function openChatWindow(userId: string) {
-  console.log(`${userId} clicked`);
-}
-
 function Chat() {
+  const {
+    state,
+    openChatWindow,
+    closeChatWindow,
+    sendMessage,
+    recieveMessage,
+  } = useChatState();
   useEffect(() => {
-    startChatConnection();
+    startChatConnection(recieveMessage);
     return closeChatConnection;
-  }, []);
+  }, [recieveMessage]);
   return (
     <ChatPage>
-      <StyledChatScreen></StyledChatScreen>
+      <StyledChatScreen
+        state={state}
+        openChatWindow={openChatWindow}
+        closeChatWindow={closeChatWindow}
+        sendMessage={sendMessage}
+      ></StyledChatScreen>
       <StyledWatchList openChatWindow={openChatWindow}></StyledWatchList>
     </ChatPage>
   );
