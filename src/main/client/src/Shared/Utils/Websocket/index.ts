@@ -30,6 +30,10 @@ export function startChatConnection(
     client.subscribe("/user/queue/reply", (message) =>
       messageCallback(JSON.parse(message.body))
     );
+
+    client.subscribe("/user/queue/errors", (message) =>
+        messageCallback(JSON.parse(message.body))
+    );
   };
 
   client.onStompError = function (frame) {
