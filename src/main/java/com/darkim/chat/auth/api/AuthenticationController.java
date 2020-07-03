@@ -43,20 +43,6 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
-    /*@RequestMapping(path = "/logout", method = RequestMethod.POST)
-    public ResponseEntity<Void> logout(HttpServletResponse res) {
-        Cookie csrfCookie = new Cookie("XSRF-TOKEN", null);
-        csrfCookie.setPath("/");
-        csrfCookie.setMaxAge(0);
-        Cookie jwtCookie = new Cookie("COOKIE_BEARER", null);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(0);
-        res.addCookie(csrfCookie);
-        res.addCookie(jwtCookie);
-        return ResponseEntity.ok().build();
-    }*/
-
     private Cookie getCSRFTokenCookie(String csrfToken) {
         Cookie cookie = new Cookie("XSRF-TOKEN", csrfToken);
         cookie.setPath("/");

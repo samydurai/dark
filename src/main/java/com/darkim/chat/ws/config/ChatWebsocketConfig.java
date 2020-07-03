@@ -1,12 +1,17 @@
 package com.darkim.chat.ws.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -14,18 +19,21 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.util.WebUtils;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @Configuration
 @EnableWebSocketMessageBroker
+@Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class ChatWebsocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final ChatWebsocketInterceptor chatWebsocketInterceptor;
+    private ApplicationContext applicationContext;
 
-    public ChatWebsocketConfig(ChatWebsocketInterceptor chatWebsocketInterceptor) {
-        this.chatWebsocketInterceptor = chatWebsocketInterceptor;
+    @Autowired
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -38,11 +46,13 @@ public class ChatWebsocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat")
                 .addInterceptors(httpSessionHandshakeInterceptor())
-                .setAllowedOrigins("*").withSockJS();
+                .withSockJS();
     }
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
+        ChatWebsocketInterceptor chatWebsocketInterceptor = applicationContext.getAutowireCapableBeanFactory()
+                .getBean(ChatWebsocketInterceptor.class);
         registration.interceptors(chatWebsocketInterceptor);
     }
 
@@ -59,6 +69,7 @@ public class ChatWebsocketConfig implements WebSocketMessageBrokerConfigurer {
                     Cookie xsrfToken = WebUtils.getCookie(servletRequest, "XSRF-TOKEN");
                     attributes.put("jwtToken", jwtToken.getValue());
                     attributes.put("xsrfToken", xsrfToken.getValue());
+                    attributes.put("X-CSRF-TOKEN", xsrfToken.getValue());
                 }
                 return true;
             }
