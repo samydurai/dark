@@ -84,6 +84,8 @@ public class ChatWebsocketInterceptor implements ChannelInterceptor {
         return message;
     }
 
+
+
     private void throwAuthenticationException(StompHeaderAccessor accessor) {
         messageUtil.sendErrorMessage(accessor);
         throw new BadCredentialsException("Please login to chat.");

@@ -10,7 +10,8 @@ public enum MessageKey {
     USER_ID_TAKEN("user_id_taken"),
     FILTER_ERROR("filter_error"),
     INVALID_USER_NAME("invalid_username"),
-    DEST_NOT_REACHABLE("dest_not_reachable");
+    DEST_NOT_REACHABLE("dest_not_reachable"),
+    SELF_MESSAGE("self_message");
 
     private String key;
 

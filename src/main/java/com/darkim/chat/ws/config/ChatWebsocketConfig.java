@@ -57,6 +57,8 @@ public class ChatWebsocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
 
+
+
     @Bean
     public HandshakeInterceptor httpSessionHandshakeInterceptor() {
         return new HandshakeInterceptor() {
