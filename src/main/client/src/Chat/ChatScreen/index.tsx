@@ -21,6 +21,7 @@ interface ChatWindowProps {
   openChatWindow: (u: Tab) => void;
   closeChatWindow: (u: Tab) => void;
   sendMessage: (m: Message) => void;
+  changeActiveTab: (t: string) => void;
 }
 
 export default function ChatWindow({
@@ -29,13 +30,13 @@ export default function ChatWindow({
   openChatWindow,
   closeChatWindow,
   sendMessage,
+  changeActiveTab,
 }: ChatWindowProps) {
   const showSnackBar = useShowSnackbar();
   const [open, setOpen] = useState(false);
-  const [currentTab, changeCurrentTab] = useState<string>();
 
   const handleTabChange = (event: React.ChangeEvent, userId: string) => {
-    changeCurrentTab(userId);
+    changeActiveTab(userId);
   };
 
   const openDialog = () => {
@@ -50,28 +51,37 @@ export default function ChatWindow({
           userId,
           hasNewMessage: false,
         });
-        changeCurrentTab(userId);
+        changeActiveTab(userId);
       } else {
         showSnackBar("user doesnt eixist");
       }
       setOpen(false);
     },
-    [showSnackBar, openChatWindow]
+    [showSnackBar, changeActiveTab, openChatWindow]
+  );
+
+  const closeTab = useCallback(
+    (tab: Tab, e: React.SyntheticEvent) => {
+      e.stopPropagation();
+      closeChatWindow(tab);
+    },
+    [closeChatWindow]
   );
 
   return (
     <div className={className}>
       <StyledPaper>
         <Tabs
-          value={currentTab}
+          value={state.activeTab}
           onChange={handleTabChange}
           variant="scrollable"
+          scrollButtons="off"
         >
           {state.tabs.map((tab, index) => (
             <ChatTabHeader
               key={index}
               tab={tab}
-              closeTab={closeChatWindow}
+              closeTab={closeTab}
               value={tab.userId}
             />
           ))}
@@ -87,7 +97,7 @@ export default function ChatWindow({
           const messages = state.messages[tab.userId] || [];
           return (
             <ChatTab
-              value={currentTab}
+              value={state.activeTab}
               key={index}
               userId={tab.userId}
               messages={messages}

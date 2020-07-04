@@ -8,7 +8,7 @@ declare const SockJS: any;
 let client: Client = null;
 
 export function startChatConnection(
-  messageCallback: (message: Message) => void
+  changeConnectionState: (s: boolean) => void
 ) {
   client = new Client({
     connectHeaders: {
@@ -20,16 +20,14 @@ export function startChatConnection(
     webSocketFactory: () => {
       return new SockJS(`http://${window.location.host}/chat`);
     },
-    reconnectDelay: 5000,
+    reconnectDelay: 5000000000,
     heartbeatIncoming: 4000,
     heartbeatOutgoing: 4000,
   });
 
   client.onConnect = function (frame) {
     console.log(frame);
-    client.subscribe("/user/queue/reply", (message) =>
-      messageCallback(JSON.parse(message.body))
-    );
+    changeConnectionState(true);
   };
 
   client.onStompError = function (frame) {
@@ -39,8 +37,16 @@ export function startChatConnection(
   client.activate();
 }
 
-export function closeChatConnection() {
+export function listen(cb: (message: Message) => void) {
+  client.subscribe("/user/queue/reply", (message) =>
+    cb(JSON.parse(message.body))
+  );
+}
+export function closeChatConnection(
+  changeConnectionState: (s: boolean) => void
+) {
   client.deactivate();
+  changeConnectionState(false);
 }
 
 export function sendMessage(message: Message) {

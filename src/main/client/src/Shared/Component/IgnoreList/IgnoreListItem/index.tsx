@@ -3,26 +3,22 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Remove from "@material-ui/icons/Cancel";
 
 import { StyledListItemText, StyledListItem } from "./styles";
-import { Tab } from "../../../Shared/Hooks/useChatState";
 
-export default function WatchListItem({
+export default function IgnoreListItem({
   userId,
   removeFn,
-  openChatWindow,
-}: {
-  userId: string;
-  removeFn: (userId: string, e: React.SyntheticEvent) => void;
-  openChatWindow: (userId: Tab) => void;
-}) {
+}: IgnoreListItemProps) {
   return (
-    <StyledListItem
-      button
-      onClick={openChatWindow.bind(null, { userId, hasNewItems: false }, true)}
-    >
+    <StyledListItem button>
       <StyledListItemText>{userId}</StyledListItemText>
       <ListItemIcon onClick={removeFn.bind(null, userId)}>
         <Remove />
       </ListItemIcon>
     </StyledListItem>
   );
+}
+
+interface IgnoreListItemProps {
+  userId: string;
+  removeFn: (u: string) => void;
 }

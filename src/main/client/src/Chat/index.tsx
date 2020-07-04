@@ -6,6 +6,7 @@ import useChatState from "../Shared/Hooks/useChatState";
 import {
   startChatConnection,
   closeChatConnection,
+  listen,
 } from "../Shared/Utils/Websocket";
 
 import { StyledChatScreen, StyledWatchList, ChatPage } from "./styles";
@@ -17,11 +18,18 @@ function Chat() {
     closeChatWindow,
     sendMessage,
     recieveMessage,
+    changeActiveTab,
+    changeConnectionState,
   } = useChatState();
   useEffect(() => {
-    startChatConnection(recieveMessage);
-    return closeChatConnection;
-  }, [recieveMessage]);
+    startChatConnection(changeConnectionState);
+    return closeChatConnection.bind(this, changeConnectionState);
+  }, [changeConnectionState]);
+  useEffect(() => {
+    if (state.isConnected) {
+      listen(recieveMessage);
+    }
+  }, [state.isConnected, recieveMessage]);
   return (
     <ChatPage>
       <StyledChatScreen
@@ -29,6 +37,7 @@ function Chat() {
         openChatWindow={openChatWindow}
         closeChatWindow={closeChatWindow}
         sendMessage={sendMessage}
+        changeActiveTab={changeActiveTab}
       ></StyledChatScreen>
       <StyledWatchList openChatWindow={openChatWindow}></StyledWatchList>
     </ChatPage>

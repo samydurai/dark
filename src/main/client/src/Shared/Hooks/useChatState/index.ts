@@ -15,10 +15,12 @@ export interface Tab {
 }
 
 export interface PageState {
+  activeTab: string;
   tabs: Tab[];
   messages: {
     [key: string]: Message[] | void;
   };
+  isConnected: boolean;
 }
 
 enum Actions {
@@ -27,16 +29,22 @@ enum Actions {
   MESSAGE_RECIEVED,
   MESSAGE_SENT,
   CLEAR_NEW,
+  CHANGE_TAB,
+  CHANGE_CONNECTION_STATE,
 }
 interface PageAction {
   action: Actions;
   tab?: Tab;
   message?: Message;
+  activeTab?: string;
+  connectionState?: boolean;
 }
 
 const inintalState: PageState = {
+  activeTab: null,
   tabs: [],
   messages: {},
+  isConnected: false,
 };
 
 function reducer(state: PageState, action: PageAction): PageState {
@@ -48,7 +56,11 @@ function reducer(state: PageState, action: PageAction): PageState {
       const filteredTabs = state.tabs.filter(
         (tab) => action.tab.userId !== tab.userId
       );
-      return { ...state, tabs: filteredTabs };
+      return {
+        ...state,
+        tabs: filteredTabs,
+        activeTab: filteredTabs[filteredTabs.length - 1]?.userId,
+      };
     case Actions.MESSAGE_RECIEVED:
       const recievedMessage = state.messages[action.message.from] || [];
       recievedMessage.push(action.message);
@@ -73,6 +85,10 @@ function reducer(state: PageState, action: PageAction): PageState {
       if (action.tab.hasNewMessage === false) {
         return state;
       }
+    case Actions.CHANGE_TAB:
+      return { ...state, activeTab: action.activeTab };
+    case Actions.CHANGE_CONNECTION_STATE:
+      return { ...state, isConnected: action.connectionState };
     default:
       return state;
   }
@@ -82,13 +98,28 @@ export default function useChatState() {
   const [state, dispatch] = useReducer(reducer, inintalState);
 
   const openChatWindow = useCallback(
-    (tab: Tab): void => {
-      dispatch({
-        action: Actions.OPEN,
-        tab,
-      });
+    (tab: Tab, changeTab?: boolean): void => {
+      if (
+        state.tabs.findIndex((stateTab) => stateTab.userId === tab.userId) >= 0
+      ) {
+        dispatch({
+          action: Actions.CHANGE_TAB,
+          activeTab: tab.userId,
+        });
+      } else {
+        dispatch({
+          action: Actions.OPEN,
+          tab,
+        });
+        if (typeof changeTab === "boolean" && changeTab) {
+          dispatch({
+            action: Actions.CHANGE_TAB,
+            activeTab: tab.userId,
+          });
+        }
+      }
     },
-    [dispatch]
+    [dispatch, state.tabs]
   );
 
   const closeChatWindow = useCallback(
@@ -128,8 +159,34 @@ export default function useChatState() {
         action: Actions.MESSAGE_RECIEVED,
         message: message,
       });
+      if (!state.activeTab) {
+        dispatch({
+          action: Actions.CHANGE_TAB,
+          activeTab: fromUser,
+        });
+      }
     },
-    [dispatch, state.tabs]
+    [dispatch, state.tabs, state.activeTab]
+  );
+
+  const changeActiveTab = useCallback(
+    (t: string) => {
+      dispatch({
+        action: Actions.CHANGE_TAB,
+        activeTab: t,
+      });
+    },
+    [dispatch]
+  );
+
+  const changeConnectionState = useCallback(
+    (s: boolean) => {
+      dispatch({
+        action: Actions.CHANGE_CONNECTION_STATE,
+        connectionState: s,
+      });
+    },
+    [dispatch]
   );
 
   return {
@@ -138,5 +195,7 @@ export default function useChatState() {
     closeChatWindow,
     sendMessage,
     recieveMessage,
+    changeActiveTab,
+    changeConnectionState,
   };
 }
