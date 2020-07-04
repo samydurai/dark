@@ -10,6 +10,8 @@ export const StyledChatTab = styled.div`
 
 export const MessageContainer = styled.div`
   flex: 1 0 calc(100% - 58px);
+  flex-flow: column;
+  display: flex;
   max-height: calc(100% - 58px);
   overflow-y: auto;
   scrollbar-color: hsla(0, 0%, 100%, 0.16) transparent;

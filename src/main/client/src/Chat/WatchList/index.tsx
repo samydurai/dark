@@ -5,12 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Add from "@material-ui/icons/AddBox";
 
 import Item from "./WatchListItem";
-import {
-  StyledList,
-  StyledWatchList,
-  Search,
-  StyledWatchListHeader,
-} from "./styles";
+import { StyledList, StyledWatchList, StyledWatchListHeader } from "./styles";
 import { Tab } from "../../Shared/Hooks/useChatState";
 
 export default function WatchList({
@@ -59,7 +54,6 @@ export default function WatchList({
         </IconButton>
       </StyledWatchListHeader>
       <StyledList>{renderList(users)}</StyledList>
-      <Search placeholder="Search" fullWidth variant="outlined" />
     </StyledWatchList>
   );
 }
