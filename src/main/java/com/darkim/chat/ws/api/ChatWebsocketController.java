@@ -4,11 +4,13 @@ import com.darkim.chat.auth.error.BaseException;
 import com.darkim.chat.auth.error.ErrorResponse;
 import com.darkim.chat.auth.error.MessageKey;
 import com.darkim.chat.auth.error.MessageResolver;
-import com.darkim.chat.ws.model.ChatMessage;
-import com.darkim.chat.ws.model.ConvertedChatMessage;
+import com.darkim.chat.flow.dao.UserChatPreferenceRepository;
+import com.darkim.chat.ws.model.*;
 import com.darkim.chat.ws.util.MessageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,6 +18,7 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.util.Set;
 
 import static com.darkim.chat.auth.error.MessageKey.DEST_NOT_REACHABLE;
 import static com.darkim.chat.auth.error.MessageKey.SELF_MESSAGE;
@@ -27,6 +30,20 @@ public class ChatWebsocketController {
     private MessageUtil messageUtil;
 
     private MessageResolver messageResolver;
+
+    private CacheManager cacheManager;
+
+    private UserChatPreferenceRepository chatPreferenceRepository;
+
+    @Autowired
+    public void setChatPreferenceRepository(UserChatPreferenceRepository chatPreferenceRepository) {
+        this.chatPreferenceRepository = chatPreferenceRepository;
+    }
+
+    @Autowired
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
     @Autowired
     public void setMessageResolver(MessageResolver messageResolver) {
@@ -45,6 +62,24 @@ public class ChatWebsocketController {
             throw new BaseException(SELF_MESSAGE, messageResolver.resolve(SELF_MESSAGE.getKey()));
         }
         messageUtil.sendToUser(principal, chatMessage);
+    }
+
+    @MessageMapping("/ping")
+    public void userPing(UserPingRequest userPingRequest, Principal principal) {
+        if (userPingRequest != null) {
+            UserStatus userStatus = userPingRequest.getUserStatus();
+            if (UserStatus.ONLINE == userStatus) {
+                Cache userStateCache = cacheManager.getCache("user_state");
+                userStateCache.put(principal.getName(), 1);
+                String onlineUser = principal.getName();
+                Set<String> usersWatchingTheOnlineUser = chatPreferenceRepository.getAllUsersWatching(onlineUser);
+                StateEvent stateEvent = StateEvent.builder()
+                        .username(onlineUser)
+                        .userStatus(UserStatus.ONLINE)
+                        .build();
+                usersWatchingTheOnlineUser.forEach(user -> messageUtil.sendStateEvent(user, stateEvent));
+            }
+        }
     }
 
     @MessageExceptionHandler

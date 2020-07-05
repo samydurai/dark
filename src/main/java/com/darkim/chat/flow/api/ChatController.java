@@ -2,6 +2,7 @@ package com.darkim.chat.flow.api;
 
 import com.darkim.chat.flow.model.UserProfile;
 import com.darkim.chat.flow.model.UserWatchRequest;
+import com.darkim.chat.flow.model.UserWatchResponse;
 import com.darkim.chat.flow.service.ChatFlowService;
 import com.darkim.chat.flow.model.UserIgnoreRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Set;
 
 @RequestMapping("/api/flow")
 @RestController
@@ -45,5 +48,15 @@ public class ChatController {
                 .username(principal.getName())
                 .build();
         return ResponseEntity.ok(userProfile);
+    }
+
+    @RequestMapping(path = "/watch", method = RequestMethod.GET)
+    public ResponseEntity<List<UserWatchResponse>> getWatchList(Principal principal) {
+        return ResponseEntity.ok(chatFlowService.getWatchList(principal.getName()));
+    }
+
+    @RequestMapping(path = "/ignore", method = RequestMethod.GET)
+    public ResponseEntity<Set<String>> getIgnoreList(Principal principal) {
+        return ResponseEntity.ok(chatFlowService.getIgnoreList(principal.getName()));
     }
 }
