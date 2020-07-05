@@ -21,4 +21,13 @@ public interface UserChatPreferenceRepository extends JpaRepository<UserChatPref
 
     @Query("select up from UserChatPreference up where up.user.userName = :username and up.entity.userName in :usersToUnwatched and up.type = 'WATCH'")
     Set<UserChatPreference> getUsersToBeUnwatched(String username, Set<String> usersToUnwatched);
+
+    @Query("select up.user.userName from UserChatPreference up where up.type = 'WATCH' and up.entity.userName = :username")
+    Set<String> getAllUsersWatching(String username);
+
+    @Query("select up.entity.userName from UserChatPreference up where up.type = 'WATCH' and up.user.userName = :username")
+    Set<String> getWatchList(String username);
+
+    @Query("select up.entity.userName from UserChatPreference up where up.type = 'WATCH' and up.user.userName = :username")
+    Set<String> getIgnoreList(String username);
 }

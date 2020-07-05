@@ -6,19 +6,17 @@ import com.darkim.chat.auth.error.BaseException;
 import com.darkim.chat.auth.error.MessageKey;
 import com.darkim.chat.auth.error.MessageResolver;
 import com.darkim.chat.flow.dao.UserChatPreferenceRepository;
-import com.darkim.chat.flow.model.PreferenceType;
-import com.darkim.chat.flow.model.UserChatPreference;
-import com.darkim.chat.flow.model.UserIgnoreRequest;
-import com.darkim.chat.flow.model.UserWatchRequest;
+import com.darkim.chat.flow.model.*;
+import com.darkim.chat.ws.model.UserStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,6 +28,13 @@ public class ChatFlowService {
     private MessageResolver messageResolver;
 
     private UserChatPreferenceRepository chatPreferenceRepository;
+
+    private CacheManager cacheManager;
+
+    @Autowired
+    public void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
+    }
 
     @Autowired
     public void setChatPreferenceRepository(UserChatPreferenceRepository chatPreferenceRepository) {
@@ -133,5 +138,36 @@ public class ChatFlowService {
             throw new BaseException(MessageKey.INVALID_USER_NAME, messageResolver.resolve(MessageKey.INVALID_USER_NAME.getKey()));
         }
         return loggedInUser;
+    }
+
+    public List<UserWatchResponse> getWatchList(String username) {
+        User loggedInUser = getLoggedInUser(username);
+        Set<String> watchListOfLoggedInUser = chatPreferenceRepository.getWatchList(loggedInUser.getUserName());
+        if (CollectionUtils.isEmpty(watchListOfLoggedInUser)) {
+            return Collections.emptyList();
+        }
+        Cache userStateCache = cacheManager.getCache("user_state");
+        List<UserWatchResponse> userWatchResponses = new ArrayList<>();
+        for (String user : watchListOfLoggedInUser) {
+            if (userStateCache.get(user) != null) {
+                UserWatchResponse userWatchResponse = UserWatchResponse.builder()
+                        .username(user)
+                        .userStatus(UserStatus.ONLINE)
+                        .build();
+                userWatchResponses.add(userWatchResponse);
+            } else {
+                UserWatchResponse userWatchResponse = UserWatchResponse.builder()
+                        .username(user)
+                        .userStatus(UserStatus.OFFLINE)
+                        .build();
+                userWatchResponses.add(userWatchResponse);
+            }
+        }
+        return userWatchResponses;
+    }
+
+    public Set<String> getIgnoreList(String username) {
+        User loggedInUser = getLoggedInUser(username);
+        return chatPreferenceRepository.getIgnoreList(loggedInUser.getUserName());
     }
 }

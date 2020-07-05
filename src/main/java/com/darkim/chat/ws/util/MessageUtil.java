@@ -5,6 +5,7 @@ import com.darkim.chat.auth.error.ErrorResponse;
 import com.darkim.chat.auth.error.MessageResolver;
 import com.darkim.chat.ws.model.ChatMessage;
 import com.darkim.chat.ws.model.ConvertedChatMessage;
+import com.darkim.chat.ws.model.StateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -14,6 +15,8 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
+import java.time.Instant;
+import java.time.ZoneOffset;
 
 import static com.darkim.chat.auth.error.MessageKey.DEST_NOT_REACHABLE;
 import static com.darkim.chat.auth.error.MessageKey.INVALID_CREDENTIALS;
@@ -49,6 +52,8 @@ public class MessageUtil {
                 .from(principal.getName())
                 .to(chatMessage.getTo())
                 .message(chatMessage.getMessage())
+                .sentAt(chatMessage.getSentAt() != null ? chatMessage.getSentAt() :
+                        Instant.now().atOffset(ZoneOffset.UTC).toInstant())
                 .build();
         try {
             simpMessagingTemplate
@@ -58,6 +63,14 @@ public class MessageUtil {
         }
     }
 
+    public void sendStateEvent(String targetUser, StateEvent stateEvent) {
+        try {
+            simpMessagingTemplate
+                    .convertAndSendToUser(targetUser, "/queue/state", stateEvent);
+        } catch (Exception e) {
+            throw new BaseException(DEST_NOT_REACHABLE, messageResolver.resolve(DEST_NOT_REACHABLE.getKey()));
+        }
+    }
     private MessageHeaders createHeaders(String sessionId) {
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
         headerAccessor.setSessionId(sessionId);

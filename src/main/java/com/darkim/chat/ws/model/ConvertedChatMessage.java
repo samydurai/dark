@@ -2,6 +2,8 @@ package com.darkim.chat.ws.model;
 
 import lombok.*;
 
+import java.time.Instant;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -14,4 +16,6 @@ public class ConvertedChatMessage {
     private String to;
 
     private String message;
+
+    private Instant sentAt;
 }
