@@ -77,10 +77,11 @@ public class JWTRequestFilter extends OncePerRequestFilter {
                 } catch (Exception e) {
                     ErrorResponse errorResponse = ErrorResponse.builder()
                             .failedAt(null)
-                            .failureReason(messageResolver.resolve(MessageKey.FILTER_ERROR.getKey()))
+                            .failureReason(messageResolver.resolve(MessageKey.INVALID_USER_NAME.getKey()))
                             .build();
-                    response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                    response.setStatus(HttpStatus.FORBIDDEN.value());
                     response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+                    return;
                 }
             }
         }
