@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState, useCallback, useEffect } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
-import Add from "@material-ui/icons/AddBox";
+import Add from "@material-ui/icons/PersonAdd";
 
 import { Tab } from "../../Shared/Hooks/useChatState";
 import { watchList } from "../../Shared/APIs";
@@ -23,9 +23,7 @@ export default function WatchList({
   className?: string;
   openChatWindow: (tab: Tab) => void;
 }) {
-  const [users, setUsers] = useState(
-    "asddfbfhghdfysdhfuygudfuduisfhdfdf".split("")
-  );
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     async function load() {

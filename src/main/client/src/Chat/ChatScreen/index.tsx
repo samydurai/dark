@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState, useCallback, lazy } from "react";
 
-import Add from "@material-ui/icons/PersonAdd";
+import Add from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import Tabs from "@material-ui/core/Tabs";
 
@@ -45,11 +45,11 @@ export default function ChatWindow({
 
   const handleClose = useCallback(
     (userId: string) => {
-      console.info(`${userId} added to chate`);
+      console.info(`${userId} added to chat`);
       if (typeof userId === "string" && userId) {
         openChatWindow({
           userId,
-          hasNewMessage: false,
+          unreadMessages: 0,
         });
         changeActiveTab(userId);
       } else {

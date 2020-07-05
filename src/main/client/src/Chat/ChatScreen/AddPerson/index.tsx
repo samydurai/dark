@@ -28,13 +28,8 @@ export default function AddPerson({
     [handleClose]
   );
   return (
-    <Dialog
-      className={rootStyle}
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Search</DialogTitle>
+    <Dialog className={rootStyle} open={open} onClose={handleClose}>
+      <DialogTitle>Search</DialogTitle>
       <DialogContent>
         <DialogContentText>Enter the user tag to search</DialogContentText>
         <form onSubmit={closeDialog}>

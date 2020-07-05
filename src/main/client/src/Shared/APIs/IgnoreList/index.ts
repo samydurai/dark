@@ -1,10 +1,14 @@
 import axios from "axios";
 
+const instance = axios.create({
+  baseURL: "/api/flow/ignore",
+});
+
 export const loadIgnoreList = () =>
-  axios.get<string[]>("/ignoreList").then((resp) => resp.data);
+  instance.get<string[]>("/").then((resp) => resp.data);
 
 export const addToIgnoreList = (userId: string) =>
-  axios.post("/ignoreList/add", { userId });
+  instance.post("/", { ignore: [userId] });
 
 export const removeFromIgnoreList = (userId: string) =>
-  axios.post("/ignore/remove", { userId });
+  instance.post("/", { enable: [userId] });

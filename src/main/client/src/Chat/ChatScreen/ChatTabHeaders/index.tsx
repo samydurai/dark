@@ -3,8 +3,13 @@ import { forwardRef, useMemo } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
 import Tab from "@material-ui/core/Tab";
+import Badge from "@material-ui/core/Badge";
 
-import { StyledPaperHeader, StyledCloseIcon } from "./styles";
+import {
+  StyledPaperHeader,
+  StyledCloseIcon,
+  StyledControlContainer,
+} from "./styles";
 import { Tab as TabProp } from "../../../Shared/Hooks/useChatState";
 
 export default function TabHeader(tabProps: ChatTabHeaderProps) {
@@ -13,9 +18,17 @@ export default function TabHeader(tabProps: ChatTabHeaderProps) {
       return (
         <StyledPaperHeader ref={ref} {...props} component={undefined}>
           {tabProps.tab.userId}
-          <IconButton onClick={tabProps.closeTab.bind(this, tabProps.tab)}>
-            <StyledCloseIcon />
-          </IconButton>
+          <StyledControlContainer>
+            <div>
+              <Badge
+                color="primary"
+                badgeContent={tabProps.tab.unreadMessages}
+              />
+            </div>
+            <IconButton onClick={tabProps.closeTab.bind(this, tabProps.tab)}>
+              <StyledCloseIcon />
+            </IconButton>
+          </StyledControlContainer>
         </StyledPaperHeader>
       );
     });

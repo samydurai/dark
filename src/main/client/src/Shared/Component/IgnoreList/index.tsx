@@ -1,22 +1,28 @@
 import * as React from "react";
 import { useState, useEffect, useCallback, useRef } from "react";
 
-import Dialog from "@material-ui/core/Dialog";
-import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/CloseOutlined";
 import List from "@material-ui/core/List";
-import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Add from "@material-ui/icons/Add";
 
 import IgnoreListItem from "./IgnoreListItem";
-import { StyledFormControl } from "./styles";
+import {
+  StyledFormControl,
+  StyledInput,
+  StyledIconButton,
+  StyledDialog,
+  StyledDialogContentText,
+  StyledDialogTitle,
+  StyledTitle,
+  StyledDialogContent,
+} from "./styles";
 
 import { ignoreList } from "../../APIs";
 
 export default function IgnoreList({ open, handleClose }: IgnoreListProps) {
-  const [list, changeList] = useState("abcdefghijklmnopqrstuvwxyz".split(""));
+  const [list, changeList] = useState([]);
   const inputRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
@@ -52,47 +58,51 @@ export default function IgnoreList({ open, handleClose }: IgnoreListProps) {
   );
 
   return (
-    <Dialog fullScreen open={open} onClose={handleClose}>
-      <Paper>
-        <IconButton
-          edge="start"
+    <StyledDialog fullScreen open={open} onClose={handleClose}>
+      <StyledDialogTitle disableTypography={true}>
+        <StyledTitle>Ignore List</StyledTitle>
+        <StyledIconButton
+          edge="end"
           color="inherit"
           onClick={handleClose}
           aria-label="close"
         >
           <CloseIcon />
-        </IconButton>
-        Ignore List
-      </Paper>
-      <div>
-        <form onSubmit={addToIgnoreList}>
-          <StyledFormControl variant="outlined">
-            <Input
-              id="message-input"
-              rows={1}
-              placeholder="Type Here..."
-              inputRef={inputRef}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton onClick={addToIgnoreList}>
-                    <Add></Add>
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </StyledFormControl>
-        </form>
-      </div>
-      <List>
-        {list.map((userId, index) => (
-          <IgnoreListItem
-            userId={userId}
-            key={index}
-            removeFn={removeFromIgnoreList.bind(this, userId)}
+        </StyledIconButton>
+      </StyledDialogTitle>
+      <form onSubmit={addToIgnoreList}>
+        <StyledFormControl variant="outlined">
+          <StyledInput
+            id="message-input"
+            rows={1}
+            placeholder="Add to Ignore list..."
+            inputRef={inputRef}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton onClick={addToIgnoreList}>
+                  <Add style={{ width: "0.5em", height: "0.5em" }}></Add>
+                </IconButton>
+              </InputAdornment>
+            }
           />
-        ))}
-      </List>
-    </Dialog>
+        </StyledFormControl>
+      </form>
+      <StyledDialogContentText>
+        This contains the list of users that you have ignored. You will not be
+        able to recieve messages from ignored users.
+      </StyledDialogContentText>
+      <StyledDialogContent style={{ padding: "0px 24px" }}>
+        <List style={{ padding: "0px" }}>
+          {list.map((userId, index) => (
+            <IgnoreListItem
+              userId={userId}
+              key={index}
+              removeFn={removeFromIgnoreList.bind(this, userId)}
+            />
+          ))}
+        </List>
+      </StyledDialogContent>
+    </StyledDialog>
   );
 }
 

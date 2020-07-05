@@ -1,10 +1,16 @@
 import axios from "axios";
 
+const instance = axios.create({
+  baseURL: "/api/flow/watch",
+});
+
 export const loadWatchList = () =>
-  axios.get<string[]>("/watchlist").then((resp) => resp.data);
+  instance.get<string[]>("/").then((resp) => resp.data);
 
 export const addToWatchList = (userId: string) =>
-  axios.post("/watchlist/add", { userId });
+  instance.post("/", {
+    watch: [userId],
+  });
 
 export const removeFromWatchList = (userId: string) =>
-  axios.post("/watchlist/remove", { userId });
+  instance.post("/", { unwatch: [userId] });
