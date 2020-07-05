@@ -1,17 +1,20 @@
 import * as React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 import IconButton from "@material-ui/core/IconButton";
-import Add from "@material-ui/icons/AddBox";
+import Add from "@material-ui/icons/PersonAdd";
+
+import { Tab } from "../../Shared/Hooks/useChatState";
+import { watchList } from "../../Shared/APIs";
 
 import Item from "./WatchListItem";
+import AddUser from "./AddUser";
 import {
   StyledList,
   StyledWatchList,
-  Search,
   StyledWatchListHeader,
+  StyledListContainer,
 } from "./styles";
-import { Tab } from "../../Shared/Hooks/useChatState";
 
 export default function WatchList({
   className,
@@ -20,20 +23,48 @@ export default function WatchList({
   className?: string;
   openChatWindow: (tab: Tab) => void;
 }) {
-  const [users, setUsers] = useState([
-    "raiden",
-    "raigor",
-    "stonehoof",
-    "elzaroth",
-  ]);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function load() {
+      const data = await watchList.load();
+      setUsers(data);
+    }
+    load();
+  }, []);
+
+  const addUser = useCallback((userId: string) => {
+    watchList.add(userId);
+  }, []);
+
+  const removeUser = useCallback((userId: string) => {
+    watchList.delete(userId);
+  }, []);
+
+  const [dialogState, changeDialogState] = useState<boolean>(false);
+
+  const handleClose = useCallback(
+    (userId: string) => {
+      changeDialogState(false);
+      if (
+        typeof userId === "string" &&
+        userId &&
+        users.findIndex((id) => id === userId) === -1
+      ) {
+        setUsers((users) => [...users, userId]);
+        addUser(userId);
+      }
+    },
+    [changeDialogState, users, addUser]
+  );
 
   const removeUserFromWatchList = useCallback(
     (userId, e: React.SyntheticEvent): void => {
       e.stopPropagation();
       setUsers((users) => users.filter((user) => user !== userId));
-      console.log(userId);
+      removeUser(userId);
     },
-    []
+    [removeUser]
   );
 
   const renderList = useCallback(
@@ -54,12 +85,14 @@ export default function WatchList({
     <StyledWatchList className={className}>
       <StyledWatchListHeader>
         <h3> Watch List</h3>
-        <IconButton>
+        <IconButton onClick={changeDialogState.bind(this, true)}>
           <Add></Add>
         </IconButton>
       </StyledWatchListHeader>
-      <StyledList>{renderList(users)}</StyledList>
-      <Search placeholder="Search" fullWidth variant="outlined" />
+      <StyledListContainer>
+        <StyledList>{renderList(users)}</StyledList>
+      </StyledListContainer>
+      <AddUser open={dialogState} handleClose={handleClose}></AddUser>
     </StyledWatchList>
   );
 }

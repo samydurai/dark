@@ -28,10 +28,18 @@ export default function AddPerson({
     [handleClose]
   );
   return (
-    <Dialog className={rootStyle} open={open} onClose={handleClose}>
-      <DialogTitle>Search</DialogTitle>
+    <Dialog
+      className={rootStyle}
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">Add to watch list</DialogTitle>
       <DialogContent>
-        <DialogContentText>Enter the user tag to search</DialogContentText>
+        <DialogContentText>
+          Enter the user tag to add user to the watch list. You will be able to
+          see when that user comes online
+        </DialogContentText>
         <form onSubmit={closeDialog}>
           <TextField
             autoFocus
@@ -50,7 +58,7 @@ export default function AddPerson({
           <b>Cancel</b>
         </Button>
         <Button onClick={closeDialog} color="primary">
-          <b>Search</b>
+          <b>Add</b>
         </Button>
       </DialogActions>
     </Dialog>
