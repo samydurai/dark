@@ -69,15 +69,18 @@ public class ChatWebsocketController {
         if (userPingRequest != null) {
             UserStatus userStatus = userPingRequest.getUserStatus();
             if (UserStatus.ONLINE == userStatus) {
-                Cache userStateCache = cacheManager.getCache("user_state");
-                userStateCache.put(principal.getName(), 1);
                 String onlineUser = principal.getName();
-                Set<String> usersWatchingTheOnlineUser = chatPreferenceRepository.getAllUsersWatching(onlineUser);
-                StateEvent stateEvent = StateEvent.builder()
-                        .username(onlineUser)
-                        .userStatus(UserStatus.ONLINE)
-                        .build();
-                usersWatchingTheOnlineUser.forEach(user -> messageUtil.sendStateEvent(user, stateEvent));
+                Cache userStateCache = cacheManager.getCache("user_state");
+                boolean isFirstPing = userStateCache.get(onlineUser) == null;
+                userStateCache.put(onlineUser, 1);
+                if (isFirstPing) {
+                    Set<String> usersWatchingTheOnlineUser = chatPreferenceRepository.getAllUsersWatching(onlineUser);
+                    StateEvent stateEvent = StateEvent.builder()
+                            .username(onlineUser)
+                            .userStatus(UserStatus.ONLINE)
+                            .build();
+                    usersWatchingTheOnlineUser.forEach(user -> messageUtil.sendStateEvent(user, stateEvent));
+                }
             }
         }
     }
