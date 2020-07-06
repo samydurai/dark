@@ -2,7 +2,7 @@ import { Client } from "@stomp/stompjs";
 
 import { authHeaders } from "../Auth";
 import { Message } from "../../Hooks/useChatState";
-import { WatchList } from "../../Hooks/useWatchListState";
+import { WatchList, Status } from "../../Hooks/useWatchListState";
 
 declare const SockJS: any;
 
@@ -33,7 +33,9 @@ export function startChatConnection(
     disconnect = setInterval(() => {
       client.publish({
         destination: "/app/ping",
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          userStatus: Status.ONLINE,
+        }),
       });
     }, 5000);
   };
