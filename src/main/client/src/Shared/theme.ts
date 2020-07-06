@@ -7,6 +7,7 @@ export const primaryColor = "rgb(97, 218, 251)";
 export const secondaryColor = "rgba(255,255,255, 0.87)";
 export const onBackgroundHE = "rgba(255,255,255, 0.87)";
 export const onBackgroundLE = "rgba(255,255,255, 0.6)";
+export const onBackgroundDisabled = "rgba(255,255,255, 0.38)";
 export const onPrimaryHE = "#000000";
 export const onPrimaryLE = "#000000";
 export const backgroundColor = "#121212";

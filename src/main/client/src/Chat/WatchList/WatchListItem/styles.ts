@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import ListItem from "@material-ui/core/ListItem";
 
+import { onBackgroundDisabled, onBackgroundHE } from "../../../Shared/theme";
+
 export const StyledListItemText = styled.div`
   text-overflow: ellipsis;
   display: block;
@@ -8,6 +10,8 @@ export const StyledListItemText = styled.div`
   max-width: 100%;
   width: 100%;
   overflow-x: hidden;
+  color: ${(props: any) =>
+    props.isOnline ? onBackgroundHE : onBackgroundDisabled};
 `;
 
 export const StyledListItem = styled(ListItem)`
