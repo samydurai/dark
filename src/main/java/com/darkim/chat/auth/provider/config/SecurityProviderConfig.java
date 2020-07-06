@@ -25,13 +25,9 @@ public class SecurityProviderConfig extends WebSecurityConfigurerAdapter {
     private JWTRequestFilter jwtRequestFilter;
 
     @Autowired
-    public void setJwtRequestFilter(JWTRequestFilter jwtRequestFilter) {
-        this.jwtRequestFilter = jwtRequestFilter;
-    }
-
-    @Autowired
-    public void setUserDetailsService(ChatUserDetailsService userDetailsService) {
+    public SecurityProviderConfig(ChatUserDetailsService userDetailsService, JWTRequestFilter jwtRequestFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
     }
 
     @Autowired
