@@ -7,7 +7,9 @@ import com.darkim.chat.auth.error.MessageKey;
 import com.darkim.chat.auth.error.MessageResolver;
 import com.darkim.chat.flow.dao.UserChatPreferenceRepository;
 import com.darkim.chat.flow.model.*;
+import com.darkim.chat.ws.model.StateEvent;
 import com.darkim.chat.ws.model.UserStatus;
+import com.darkim.chat.ws.util.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -30,6 +32,13 @@ public class ChatFlowService {
     private UserChatPreferenceRepository chatPreferenceRepository;
 
     private CacheManager cacheManager;
+
+    private MessageUtil messageUtil;
+
+    @Autowired
+    public void setMessageUtil(MessageUtil messageUtil) {
+        this.messageUtil = messageUtil;
+    }
 
     @Autowired
     public void setCacheManager(CacheManager cacheManager) {
@@ -124,9 +133,20 @@ public class ChatFlowService {
                 .collect(Collectors.toMap(User::getUserName, Function.identity()));
         List<UserChatPreference> userChatPreferences = usersToWatch.stream()
                 .map(usernameToUserMap::get)
-                .map(userToBeIgnored -> UserChatPreference.from(loggedInUser, userToBeIgnored, PreferenceType.WATCH))
+                .map(userToBeWatched -> UserChatPreference.from(loggedInUser, userToBeWatched, PreferenceType.WATCH))
                 .collect(Collectors.toList());
         chatPreferenceRepository.saveAll(userChatPreferences);
+        for (String userToWatch : usersToWatch) {
+            Cache userStateCache = cacheManager.getCache("user_state");
+            boolean isUserOnline = userStateCache.get(userToWatch) != null;
+            StateEvent stateEvent = StateEvent.builder()
+                    .username(userToWatch)
+                    .userStatus(isUserOnline ? UserStatus.ONLINE : UserStatus.OFFLINE)
+                    .build();
+            messageUtil.sendStateEvent(loggedInUser.getUserName(), stateEvent);
+        }
+
+
     }
 
     private User getLoggedInUser(String username) {
