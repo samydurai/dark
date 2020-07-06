@@ -66,7 +66,7 @@ public class MessageUtil {
     public void sendStateEvent(String targetUser, StateEvent stateEvent) {
         try {
             simpMessagingTemplate
-                    .convertAndSendToUser(targetUser, "/queue/state", stateEvent);
+                    .convertAndSendToUser(targetUser, "/queue/status", stateEvent);
         } catch (Exception e) {
             throw new BaseException(DEST_NOT_REACHABLE, messageResolver.resolve(DEST_NOT_REACHABLE.getKey()));
         }

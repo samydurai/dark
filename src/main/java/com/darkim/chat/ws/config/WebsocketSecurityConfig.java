@@ -16,7 +16,7 @@ public class WebsocketSecurityConfig extends AbstractSecurityWebSocketMessageBro
                 .nullDestMatcher().authenticated()
                 .simpDestMatchers("/app/**").fullyAuthenticated()
                 .simpSubscribeDestMatchers("/user/queue/reply",
-                        "/user/queue/errors", "/user/queue/state").fullyAuthenticated()
+                        "/user/queue/errors", "/user/queue/status").fullyAuthenticated()
                 .simpTypeMatchers(MESSAGE, SUBSCRIBE).denyAll();
 
     }
