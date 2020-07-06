@@ -2,10 +2,12 @@ import { Client } from "@stomp/stompjs";
 
 import { authHeaders } from "../Auth";
 import { Message } from "../../Hooks/useChatState";
+import { WatchList } from "../../Hooks/useWatchListState";
 
 declare const SockJS: any;
 
 let client: Client = null;
+let disconnect: number = null;
 
 export function startChatConnection(
   changeConnectionState: (s: boolean) => void
@@ -28,6 +30,12 @@ export function startChatConnection(
   client.onConnect = function (frame) {
     console.log(frame);
     changeConnectionState(true);
+    disconnect = setInterval(() => {
+      client.publish({
+        destination: "/app/ping",
+        body: JSON.stringify({}),
+      });
+    }, 5000);
   };
 
   client.onStompError = function (frame) {
@@ -37,16 +45,24 @@ export function startChatConnection(
   client.activate();
 }
 
-export function listen(cb: (message: Message) => void) {
+export function listenToMessage(cb: (message: Message) => void) {
   client.subscribe("/user/queue/reply", (message) =>
     cb(JSON.parse(message.body))
   );
 }
+
+export function listenToStatusChange(cb: (status: WatchList) => void): void {
+  client.subscribe("/user/queue/status", (message) => {
+    cb(JSON.parse(message.body));
+  });
+}
+
 export function closeChatConnection(
   changeConnectionState: (s: boolean) => void
 ) {
   client.deactivate();
   changeConnectionState(false);
+  clearInterval(disconnect);
 }
 
 export function sendMessage(message: Message) {
