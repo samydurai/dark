@@ -7,20 +7,16 @@ server:
     key-store-password: ${PASSWORD}
     key-alias: dark
     key-store-type: PKCS12
+
 spring:
   jpa:
-    database: H2
+    database: POSTGRESQL
     show-sql: true
     hibernate:
       ddl-auto: update
   datasource:
-    platform: h2
-    url: jdbc:h2:file:${PATH_TO_DB}
-    username: ${USER_NAME}
-    password: ${PASSWORD}
-    driverClassName: org.h2.Driver
-  h2:
-    console:
-      enabled: true
-
-
+    platform: postgres
+    url: jdbc:postgresql://${HOST}:5432/${DB_NAME}
+    username: ${DB_USER_NAME}
+    password: ${DB_PASSWORD}
+    driverClassName: org.postgresql.Driver

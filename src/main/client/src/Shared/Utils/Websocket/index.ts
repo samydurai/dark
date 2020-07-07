@@ -20,7 +20,7 @@ export function startChatConnection(
       console.log(str);
     },
     webSocketFactory: () => {
-      return new SockJS(`http://${window.location.host}/chat`);
+      return new SockJS(`https://${window.location.host}/chat`);
     },
     reconnectDelay: 5000000000,
     heartbeatIncoming: 4000,
