@@ -70,8 +70,8 @@ public class ChatFlowService {
     @Transactional
     public void ignoreUsers(String username, UserIgnoreRequest userIgnoreRequest) {
         User loggedInUser = getLoggedInUser(username);
-        if (CollectionUtils.isEmpty(userIgnoreRequest.getIgnoreUsers())
-                && CollectionUtils.isEmpty(userIgnoreRequest.getEnableUsers())) {
+        if (CollectionUtils.isEmpty(userIgnoreRequest.getIgnore())
+                && CollectionUtils.isEmpty(userIgnoreRequest.getEnable())) {
             return;
         }
         ignoreUsers(userIgnoreRequest, loggedInUser);
@@ -80,7 +80,7 @@ public class ChatFlowService {
     }
 
     private void enableUsers(UserIgnoreRequest userIgnoreRequest, User loggedInUser) {
-        Set<String> enableUsers = userIgnoreRequest.getEnableUsers();
+        Set<String> enableUsers = userIgnoreRequest.getEnable();
         enableUsers.removeIf(user -> loggedInUser.getUserName().equals(user));
         if (CollectionUtils.isEmpty(enableUsers)) {
             return;
@@ -91,7 +91,7 @@ public class ChatFlowService {
 
     private void ignoreUsers(UserIgnoreRequest userIgnoreRequest, User loggedInUser) {
         String loggedInUserName = loggedInUser.getUserName();
-        Set<String> usernamesToBeIgnored = userIgnoreRequest.getIgnoreUsers();
+        Set<String> usernamesToBeIgnored = userIgnoreRequest.getIgnore();
         usernamesToBeIgnored.removeIf(loggedInUserName::equals);
         Set<String> usernamesAlreadyIgnored = chatPreferenceRepository.getAllIgnoredUsers(loggedInUserName);
         usernamesToBeIgnored.removeIf(usernamesAlreadyIgnored::contains);

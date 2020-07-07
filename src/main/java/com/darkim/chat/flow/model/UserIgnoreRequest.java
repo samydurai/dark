@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class UserIgnoreRequest {
 
-    private Set<String> ignoreUsers = new HashSet<>();
+    private Set<String> ignore = new HashSet<>();
 
-    private Set<String> enableUsers = new HashSet<>();
+    private Set<String> enable = new HashSet<>();
 }

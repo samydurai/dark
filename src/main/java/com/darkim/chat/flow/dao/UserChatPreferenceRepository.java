@@ -28,6 +28,10 @@ public interface UserChatPreferenceRepository extends JpaRepository<UserChatPref
     @Query("select up.entity.userName from UserChatPreference up where up.type = 'WATCH' and up.user.userName = :username")
     Set<String> getWatchList(String username);
 
-    @Query("select up.entity.userName from UserChatPreference up where up.type = 'WATCH' and up.user.userName = :username")
+    @Query("select up.entity.userName from UserChatPreference up where up.type = 'IGNORE' and up.user.userName = :username")
     Set<String> getIgnoreList(String username);
+
+    @Query("select case when count(up) > 0 then true else false end from UserChatPreference up " +
+            "where up.user.userName = :receiver and up.type = 'IGNORE' and up.entity.userName = :sender")
+    boolean isUserIgnored(String sender, String receiver);
 }

@@ -56,7 +56,7 @@ public class ChatFlowServiceTest {
         List<User> users = createMockUsers();
         String loggedInUser = getLoggedInUser(users);
         UserIgnoreRequest userIgnoreRequest = getUserIgnoreRequest(users, loggedInUser);
-        userIgnoreRequest.getIgnoreUsers().add(loggedInUser); //Adding logged in user
+        userIgnoreRequest.getIgnore().add(loggedInUser); //Adding logged in user
         chatFlowService.ignoreUsers(loggedInUser, userIgnoreRequest);
         Set<String> allIgnoredUsersFromStore = userChatPreferenceRepository.getAllIgnoredUsers(loggedInUser);
         Set<String> expectedIgnoredUsers = users.stream().filter(user -> !loggedInUser.equals(user.getUserName()))
@@ -130,7 +130,7 @@ public class ChatFlowServiceTest {
         List<User> users = createMockUsers();
         String loggedInUser = getLoggedInUser(users);
         UserIgnoreRequest userIgnoreRequest = getUserIgnoreRequest(users, loggedInUser);
-        userIgnoreRequest.setEnableUsers(userIgnoreRequest.getIgnoreUsers());
+        userIgnoreRequest.setEnable(userIgnoreRequest.getIgnore());
         chatFlowService.ignoreUsers(loggedInUser, userIgnoreRequest);
         Set<String> allIgnoredUsersFromStore = userChatPreferenceRepository.getAllIgnoredUsers(loggedInUser);
         Assert.assertTrue(allIgnoredUsersFromStore.isEmpty());
