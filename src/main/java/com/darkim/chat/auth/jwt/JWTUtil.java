@@ -15,9 +15,7 @@ import java.util.function.Function;
 @Service
 public class JWTUtil {
 
-    private static String SECRET_KEY = "secret"; //Load it from secure source
-
-    private static String CSRF_TOKEN = "csrf-token";
+    private static final String SECRET_KEY = System.getProperty("SIGNING_KEY");
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -41,6 +39,7 @@ public class JWTUtil {
 
     public String generateToken(UserDetails userDetails, String csrfToken) {
         Map<String, Object> claims = new HashMap<>();
+        String CSRF_TOKEN = "csrf-token";
         claims.put(CSRF_TOKEN, csrfToken);
         return createToken(claims, userDetails.getUsername());
     }
