@@ -61,7 +61,12 @@ public class ChatWebsocketController {
             log.info("Cannot send messages to himself.  So not sending it back.");
             throw new BaseException(SELF_MESSAGE, messageResolver.resolve(SELF_MESSAGE.getKey()));
         }
-        messageUtil.sendToUser(principal, chatMessage);
+        String sender = principal.getName();
+        String receiver = chatMessage.getTo();
+        boolean isReceiverIgnoredSender = chatPreferenceRepository.isUserIgnored(sender, receiver);
+        if (!isReceiverIgnoredSender) {
+            messageUtil.sendToUser(principal, chatMessage);
+        }
     }
 
     @MessageMapping("/ping")
@@ -84,6 +89,8 @@ public class ChatWebsocketController {
             }
         }
     }
+
+
 
     @MessageExceptionHandler
     @SendToUser(value="/queue/errors", broadcast=false)
