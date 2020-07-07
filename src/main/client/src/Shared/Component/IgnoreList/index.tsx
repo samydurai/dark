@@ -32,11 +32,7 @@ export default function IgnoreList({ open, handleClose }: IgnoreListProps) {
   useEffect(() => {
     async function load() {
       const data = await ignoreList.load();
-      changeList(
-        "name raidn kek qewl dfs wersf wrfsf raigor kekw stone hoog hoof horse raiden raigor kit shit fuckin slap hit the but".split(
-          " "
-        )
-      );
+      changeList(data);
     }
     load();
   }, []);
