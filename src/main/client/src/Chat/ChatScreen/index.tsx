@@ -46,7 +46,7 @@ export default function ChatWindow({
 
   const handleClose = useCallback(
     async (userId: string) => {
-      console.info(`${userId} added to chat`);
+      setOpen(false);
       if (typeof userId === "string" && userId) {
         const isValidUser = await user.check(userId);
         if (isValidUser) {
@@ -59,7 +59,6 @@ export default function ChatWindow({
           showSnackBar("User does not exist");
         }
       }
-      setOpen(false);
     },
     [showSnackBar, changeActiveTab, openChatWindow]
   );
