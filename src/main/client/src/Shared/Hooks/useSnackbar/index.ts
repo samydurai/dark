@@ -4,9 +4,12 @@ import { Message } from "../../Context/Message";
 
 export function useShowSnackbar() {
   const setSnackbarState = useContext(Message);
-  const showSnackbar = (message: string) => {
-    setSnackbarState((state) => ({ ...state, message, open: true }));
-  };
+  const showSnackbar = useCallback(
+    (message: string) => {
+      setSnackbarState((state) => ({ ...state, message, open: true }));
+    },
+    [setSnackbarState]
+  );
   return showSnackbar;
 }
 
