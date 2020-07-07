@@ -18,6 +18,7 @@ export const StyledControlContainer = sytledComponent.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 20px;
   div {
     margin: 0px 5px;
     width: 20px;

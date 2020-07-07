@@ -10,7 +10,6 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import IconButton from "@material-ui/core/IconButton";
 
 import {
-  backgroundColor,
   backgroundColorElevation,
   primaryColor,
   secondaryColor,
@@ -54,9 +53,7 @@ export const StyledDialogContent = styledComponent(DialogContent)`
   }
 `;
 
-export const StyledDialog = styled(Dialog)({
-  backgroundColor,
-});
+export const StyledDialog = styled(Dialog)({});
 
 export const StyledDialogContentText = styled(DialogContentText)({
   padding: "8px 24px",

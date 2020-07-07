@@ -6,6 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Tabs from "@material-ui/core/Tabs";
 
 import { useShowSnackbar } from "../../Shared/Hooks/useSnackbar";
+import { user } from "../../Shared/APIs";
 import { PageState, Message, Tab } from "../../Shared/Hooks/useChatState";
 
 import ChatTab from "./ChatTab";
@@ -44,16 +45,19 @@ export default function ChatWindow({
   };
 
   const handleClose = useCallback(
-    (userId: string) => {
+    async (userId: string) => {
       console.info(`${userId} added to chat`);
       if (typeof userId === "string" && userId) {
-        openChatWindow({
-          userId,
-          unreadMessages: 0,
-        });
-        changeActiveTab(userId);
-      } else {
-        showSnackBar("user doesnt eixist");
+        const isValidUser = await user.check(userId);
+        if (isValidUser) {
+          openChatWindow({
+            userId,
+            unreadMessages: 0,
+          });
+          changeActiveTab(userId);
+        } else {
+          showSnackBar("User does not exist");
+        }
       }
       setOpen(false);
     },

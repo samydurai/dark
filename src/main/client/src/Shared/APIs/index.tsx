@@ -10,6 +10,8 @@ import {
   removeFromIgnoreList,
 } from "./IgnoreList";
 
+import { checkUser } from "./User";
+
 export const watchList = {
   load: loadWatchList,
   add: addToWatchList,
@@ -20,4 +22,8 @@ export const ignoreList = {
   load: loadIgnoreList,
   add: addToIgnoreList,
   delete: removeFromIgnoreList,
+};
+
+export const user = {
+  check: checkUser,
 };

@@ -6,6 +6,8 @@ import CloseIcon from "@material-ui/icons/CloseOutlined";
 import List from "@material-ui/core/List";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Add from "@material-ui/icons/Add";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/Button";
 
 import IgnoreListItem from "./IgnoreListItem";
 import {
@@ -19,16 +21,22 @@ import {
   StyledDialogContent,
 } from "./styles";
 
-import { ignoreList } from "../../APIs";
+import { ignoreList, user } from "../../APIs";
+import { useShowSnackbar } from "../../Hooks/useSnackbar";
 
 export default function IgnoreList({ open, handleClose }: IgnoreListProps) {
   const [list, changeList] = useState([]);
+  const showMessage = useShowSnackbar();
   const inputRef = useRef<HTMLInputElement>();
 
   useEffect(() => {
     async function load() {
       const data = await ignoreList.load();
-      changeList(data);
+      changeList(
+        "name raidn kek qewl dfs wersf wrfsf raigor kekw stone hoog hoof horse raiden raigor kit shit fuckin slap hit the but".split(
+          " "
+        )
+      );
     }
     load();
   }, []);
@@ -37,16 +45,21 @@ export default function IgnoreList({ open, handleClose }: IgnoreListProps) {
     async (e: React.SyntheticEvent) => {
       e.preventDefault();
       const input = inputRef.current.value;
-      changeList((list) => {
-        if (list.findIndex((user) => user === input) === -1 && input) {
-          return [...list, input];
-        }
-        return list;
-      });
+      const isValidUser = !!input && (await user.check(input));
+      if (isValidUser) {
+        changeList((list) => {
+          if (list.findIndex((user) => user === input) === -1 && input) {
+            return [...list, input];
+          }
+          return list;
+        });
+        ignoreList.add(input);
+      } else {
+        showMessage("User does not exist");
+      }
       inputRef.current.value = "";
-      ignoreList.add(input);
     },
-    [changeList]
+    [changeList, showMessage]
   );
 
   const removeFromIgnoreList = useCallback(
@@ -58,7 +71,7 @@ export default function IgnoreList({ open, handleClose }: IgnoreListProps) {
   );
 
   return (
-    <StyledDialog fullScreen open={open} onClose={handleClose}>
+    <StyledDialog open={open} onClose={handleClose} maxWidth={"sm"}>
       <StyledDialogTitle disableTypography={true}>
         <StyledTitle>Ignore List</StyledTitle>
         <StyledIconButton
@@ -102,6 +115,11 @@ export default function IgnoreList({ open, handleClose }: IgnoreListProps) {
           ))}
         </List>
       </StyledDialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          <b>Close</b>
+        </Button>
+      </DialogActions>
     </StyledDialog>
   );
 }

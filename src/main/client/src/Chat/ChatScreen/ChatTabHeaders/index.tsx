@@ -21,7 +21,7 @@ export default function TabHeader(tabProps: ChatTabHeaderProps) {
           <StyledControlContainer>
             <div>
               <Badge
-                color="primary"
+                color="secondary"
                 badgeContent={tabProps.tab.unreadMessages}
               />
             </div>

@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Remove from "@material-ui/icons/Cancel";
 
@@ -18,7 +19,7 @@ export default function WatchListItem({
       button
       onClick={openChatWindow.bind(
         null,
-        { user: user.username, hasNewItems: false },
+        { userId: user.username, hasNewItems: false },
         true
       )}
     >

@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 
-import { watchList } from "../../../Shared/APIs";
+import { watchList, user } from "../../../Shared/APIs";
+import { useShowSnackbar } from "../../../Shared/Hooks/useSnackbar";
 import { listenToStatusChange } from "../../Utils/Websocket";
 
 const addUser = (userId: string) => {
@@ -13,6 +14,8 @@ const removeUser = (userId: string) => {
 
 export default function useWatchListState(isConnected: boolean) {
   const [list, setList] = useState<WatchList[]>([]);
+
+  const showMessage = useShowSnackbar();
 
   const updateUserStatus = useCallback((update: WatchList) => {
     setList((list) => {
@@ -48,17 +51,25 @@ export default function useWatchListState(isConnected: boolean) {
     []
   );
 
-  const addUserToWatchList = useCallback((userId: string) => {
-    if (typeof userId === "string" && userId) {
-      setList((users) => {
-        if (users.findIndex((u) => u.username === userId) !== -1) {
-          return users;
+  const addUserToWatchList = useCallback(
+    async (userId: string) => {
+      if (typeof userId === "string" && userId) {
+        const isValidUser = await user.check(userId);
+        if (isValidUser) {
+          setList((users) => {
+            if (users.findIndex((u) => u.username === userId) !== -1) {
+              return users;
+            }
+            return [...users, { username: userId, userStatus: Status.OFFLINE }];
+          });
+          addUser(userId);
+        } else {
+          showMessage("User does not exist");
         }
-        return [...users, { username: userId, userStatus: Status.OFFLINE }];
-      });
-      addUser(userId);
-    }
-  }, []);
+      }
+    },
+    [showMessage]
+  );
 
   return {
     list,
