@@ -72,44 +72,47 @@ export default function ChatWindow({
   );
 
   return (
-    <div className={className}>
-      <StyledPaper>
-        <Tabs
-          value={state.activeTab}
-          onChange={handleTabChange}
-          variant="scrollable"
-          scrollButtons="off"
-        >
-          {state.tabs.map((tab, index) => (
-            <ChatTabHeader
-              key={index}
-              tab={tab}
-              closeTab={closeTab}
-              value={tab.userId}
-            />
-          ))}
-        </Tabs>
-        <IconButton onClick={openDialog}>
-          <Add></Add>
-        </IconButton>
-      </StyledPaper>
-      {state.tabs.length === 0 ? (
-        <EmptyState openDialog={openDialog} />
-      ) : (
-        state.tabs.map((tab, index) => {
-          const messages = state.messages[tab.userId] || [];
-          return (
-            <ChatTab
+    <>
+      {state.tabs.length !== 0 && (
+        <div className={className}>
+          <StyledPaper>
+            <Tabs
               value={state.activeTab}
-              key={index}
-              userId={tab.userId}
-              messages={messages}
-              sendMessage={sendMessage}
-            ></ChatTab>
-          );
-        })
+              onChange={handleTabChange}
+              variant="scrollable"
+              scrollButtons="off"
+            >
+              {state.tabs.map((tab, index) => (
+                <ChatTabHeader
+                  key={index}
+                  tab={tab}
+                  closeTab={closeTab}
+                  value={tab.userId}
+                />
+              ))}
+            </Tabs>
+            <IconButton onClick={openDialog}>
+              <Add></Add>
+            </IconButton>
+          </StyledPaper>
+          {state.tabs.map((tab, index) => {
+            const messages = state.messages[tab.userId] || [];
+            return (
+              <ChatTab
+                value={state.activeTab}
+                key={index}
+                userId={tab.userId}
+                messages={messages}
+                sendMessage={sendMessage}
+              ></ChatTab>
+            );
+          })}
+        </div>
+      )}
+      {state.tabs.length === 0 && (
+        <EmptyState openDialog={openDialog}></EmptyState>
       )}
       {open && <AddPerson open={open} handleClose={handleClose}></AddPerson>}
-    </div>
+    </>
   );
 }
