@@ -12,6 +12,7 @@ export const onPrimaryHE = "#000000";
 export const onPrimaryLE = "#000000";
 export const backgroundColor = "#121212";
 export const backgroundColorElevation = "#272727";
+export const backgroundColorLowElevation = "#424242";
 export const errorBackgroundColor = "#f8d7da";
 export const onErrorBackgroundHE = "#cf6679";
 export const onErrorBackgroundLE = "#f5c6cb";

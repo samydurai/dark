@@ -10,6 +10,7 @@ import useWatchListState, {
 } from "../../Shared/Hooks/useWatchListState";
 
 import Item from "./WatchListItem";
+import EmptyState from "./EmptyState";
 import AddUser from "./AddUser";
 import {
   StyledList,
@@ -61,9 +62,16 @@ export default function WatchList({
           <Add></Add>
         </IconButton>
       </StyledWatchListHeader>
-      <StyledListContainer>
-        <StyledList>{renderList(list)}</StyledList>
-      </StyledListContainer>
+      {!!list.length && (
+        <StyledListContainer>
+          <StyledList>{renderList(list)}</StyledList>
+        </StyledListContainer>
+      )}
+      {!list.length && (
+        <EmptyState
+          openDialog={changeDialogState.bind(this, true)}
+        ></EmptyState>
+      )}
       <AddUser open={dialogState} handleClose={handleClose}></AddUser>
     </StyledWatchList>
   );

@@ -4,6 +4,10 @@ import List from "@material-ui/core/List";
 import TextField from "@material-ui/core/TextField";
 
 import ScrollDiv from "../../Shared/Component/ScrollableDiv";
+import {
+  backgroundColorElevation,
+  backgroundColorLowElevation,
+} from "../../Shared/theme";
 
 export const StyledList = styled(List)``;
 
@@ -13,6 +17,7 @@ export const StyledListContainer = styled(ScrollDiv)`
 `;
 
 export const StyledWatchList = styled.div`
+  border-left: 1px solid ${backgroundColorElevation};
   max-height: 100%;
   height: 100%;
   display: flex;
@@ -28,4 +33,5 @@ export const StyledWatchListHeader = styled.div`
   display: flex;
   height: 48px;
   justify-content: space-between;
+  background-color: ${backgroundColorLowElevation};
 `;
