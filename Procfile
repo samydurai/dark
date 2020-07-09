@@ -1,2 +1,1 @@
-worker: cd src/main/client && npm run install && npm run copy && cd ../../.. &&
-web: java -jar target/dark.jar
+web: src/main/client && npm run install && npm run copy && cd ../../.. && java -jar target/dark.jar
