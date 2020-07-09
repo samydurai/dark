@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* com.darkim.private.private-im
+web: java -jar target/dark.jar
