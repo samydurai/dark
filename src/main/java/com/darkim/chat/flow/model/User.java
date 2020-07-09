@@ -1,4 +1,4 @@
-package com.darkim.chat.auth.entity;
+package com.darkim.chat.flow.model;
 
 import com.darkim.chat.flow.model.UserChatPreference;
 import lombok.*;
@@ -18,10 +18,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String userName;
 
     @Column(name = "password")

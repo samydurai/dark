@@ -1,6 +1,6 @@
 package com.darkim.chat.auth.dao;
 
-import com.darkim.chat.auth.entity.User;
+import com.darkim.chat.flow.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

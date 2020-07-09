@@ -1,7 +1,7 @@
 package com.darkim.chat.auth.service;
 
 import com.darkim.chat.auth.dao.UserRepository;
-import com.darkim.chat.auth.entity.User;
+import com.darkim.chat.flow.model.User;
 import com.darkim.chat.auth.error.BaseException;
 import com.darkim.chat.auth.error.MessageKey;
 import com.darkim.chat.auth.error.MessageResolver;

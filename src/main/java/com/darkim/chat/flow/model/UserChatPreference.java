@@ -1,6 +1,5 @@
 package com.darkim.chat.flow.model;
 
-import com.darkim.chat.auth.entity.User;
 import lombok.*;
 
 import javax.persistence.*;
