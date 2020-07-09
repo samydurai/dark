@@ -1,26 +1,17 @@
 server:
   compression:
     enabled: true
-  ssl:
-    enabled: true
-    key-store: classpath:dark.p12
-    key-store-password: ${PASSWORD}
-    key-alias: dark
-    key-store-type: PKCS12
 spring:
   jpa:
-    database: H2
-    show-sql: true
+    database: POSTGRESQL
     hibernate:
       ddl-auto: update
   datasource:
-    platform: h2
-    url: jdbc:h2:file:${PATH_TO_DB}
-    username: ${USER_NAME}
-    password: ${PASSWORD}
-    driverClassName: org.h2.Driver
-  h2:
-    console:
-      enabled: true
+    platform: postgres
+    url: ${JDBC_DATABASE_URL}
+    driverClassName: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
 
-
+jwt:
+  secret: ${SECRET_KEY}

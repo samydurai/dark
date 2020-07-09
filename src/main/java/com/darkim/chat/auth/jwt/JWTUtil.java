@@ -3,6 +3,7 @@ package com.darkim.chat.auth.jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,12 @@ import java.util.function.Function;
 @Service
 public class JWTUtil {
 
-    private static final String SECRET_KEY = System.getProperty("SIGNING_KEY");
+    private String SECRET_KEY;
+
+    @Value("${jwt.secret}")
+    public void setSECRET_KEY(String SECRET_KEY) {
+        this.SECRET_KEY = SECRET_KEY;
+    }
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

@@ -37,7 +37,12 @@ public class SecurityProviderConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf().disable()
+        httpSecurity
+                .requiresChannel()
+                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+                .requiresSecure()
+                .and()
+                .csrf().disable()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/logout"))
                 .addLogoutHandler(new LogoutHandlerImpl())
                 .logoutSuccessUrl("/")

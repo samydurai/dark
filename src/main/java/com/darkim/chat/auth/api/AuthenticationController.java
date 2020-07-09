@@ -46,13 +46,14 @@ public class AuthenticationController {
     private Cookie getCSRFTokenCookie(String csrfToken) {
         Cookie cookie = new Cookie("XSRF-TOKEN", csrfToken);
         cookie.setPath("/");
+        cookie.setSecure(true);
         cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
         return cookie;
     }
 
     @RequestMapping(path = "/test", method = RequestMethod.GET)
     public String test() {
-        return "Hello Human!";
+        return "Hello, Welcome!";
     }
 
     private Cookie getJWTTokenCookie(String jwtToken) {
@@ -60,6 +61,7 @@ public class AuthenticationController {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
+        cookie.setSecure(true);
         return cookie;
     }
 }
