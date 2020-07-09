@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "chat_user")
 @Getter
 @Setter
 @AllArgsConstructor
