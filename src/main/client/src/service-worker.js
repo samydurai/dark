@@ -1,12 +1,8 @@
 import * as navigationPreload from "workbox-navigation-preload";
 import { precacheAndRoute } from "workbox-precaching";
-import {
-  NavigationRoute,
-  registerRoute,
-  setDefaultHandler,
-} from "workbox-routing";
+import { NavigationRoute, registerRoute } from "workbox-routing";
 import { skipWaiting, clientsClaim } from "workbox-core";
-import { NetworkOnly, StaleWhileRevalidate } from "workbox-strategies";
+import { NetworkOnly } from "workbox-strategies";
 
 const CACHE_NAME = "offline-html";
 // This assumes /offline.html is a URL for your self-contained
@@ -37,7 +33,6 @@ const navigationHandler = async (params) => {
 
 // Register this strategy to handle all navigations.
 registerRoute(new NavigationRoute(navigationHandler));
-setDefaultHandler(new StaleWhileRevalidate());
 precacheAndRoute(self.__WB_MANIFEST);
 
 skipWaiting();
