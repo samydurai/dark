@@ -1,6 +1,8 @@
 import { createGlobalStyle } from "styled-components";
 import { backgroundColor } from "./theme";
-const image = require("../static/appbackground.jpg");
+
+const imageJPG = require("../static/appbackground.jpg");
+const imageWbebP = require("../static/appbackground.webp");
 
 const GlobalStyles = createGlobalStyle`
     body, input {
@@ -14,16 +16,22 @@ const GlobalStyles = createGlobalStyle`
         align-items: center;
         justify-content: center;
         margin: 0px;
-        background-image: url(${image.default});
-        background-repeat: repeat;
-        background-size: contain;
+        @media(min-width: 960px) {
+            background-image: url(${imageJPG.default});
+            background-image: url(${imageWbebP.default});
+            background-repeat: repeat;
+            background-size: contain;
+        }
     }
     
     #app {
         height: 100vh;
-        width: 70vw;
+        width: 100vw;
         background-color: ${backgroundColor};
         color: whitesmoke;
+        @media(min-width: 960px){
+            width: 70vw;
+        }
     }
 `;
 

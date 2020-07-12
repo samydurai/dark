@@ -71,6 +71,7 @@
     "eslint-plugin-react-hooks": "^4.0.2",
     "file-loader": "^6.0.0",
     "html-webpack-plugin": "^4.3.0",
+    "image-webpack-loader": "^6.0.0",
     "prettier": "^2.0.5",
     "source-map-loader": "^0.2.4",
     "style-loader": "^1.2.1",
