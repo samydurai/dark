@@ -8,8 +8,7 @@ export const ChatPage = styled.div`
 `;
 
 export const StyledChatScreen = styled(ChatScreen)`
-  flex: 1 0 80%;
+  flex: 1 0 75%;
   display: flex;
   flex-flow: column;
-  max-width: 80%;
 `;

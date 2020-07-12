@@ -5,9 +5,9 @@ import Drawer from "@material-ui/core/Drawer";
 import { backgroundColorElevation } from "../../theme";
 
 export const StyledWatchList = styled.div`
-  flex: 0 0 20%;
+  flex: 0 0 25%;
   height: 100%;
-  max-width: 20%;
+  max-width: 25%;
   border-left: 1px solid ${backgroundColorElevation};
   max-height: 100%;
   display: flex;
@@ -33,6 +33,7 @@ export const ButtonText = styled.div`
 
 export const StyledDrawer = styled(Drawer)`
   .MuiDrawer-paper {
-    max-width: 80vw;
+    max-width: 60vw;
+    width: 60vw;
   }
 `;

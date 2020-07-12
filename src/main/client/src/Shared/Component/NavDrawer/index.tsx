@@ -13,7 +13,7 @@ import {
 
 export default function withNavDrawer<T>(Component: (p: any) => JSX.Element) {
   return function NavDrawer(props: T) {
-    const mobileLayout = useMediaQuery("(max-width: 960px)");
+    const mobileLayout = useMediaQuery("(max-width: 640px)");
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const toggleDrawer = useCallback(
       (event) => {
