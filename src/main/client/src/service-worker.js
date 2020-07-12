@@ -35,5 +35,5 @@ const navigationHandler = async (params) => {
 registerRoute(new NavigationRoute(navigationHandler));
 precacheAndRoute(self.__WB_MANIFEST);
 
-skipWaiting();
 clientsClaim();
+skipWaiting();
