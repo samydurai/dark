@@ -8,22 +8,18 @@ import { Tab } from "../../Shared/Hooks/useChatState";
 import useWatchListState, {
   WatchList,
 } from "../../Shared/Hooks/useWatchListState";
+import withNavDrawer from "../../Shared/Component/NavDrawer";
 
 import Item from "./WatchListItem";
 import EmptyState from "./EmptyState";
 import AddUser from "./AddUser";
 import {
   StyledList,
-  StyledWatchList,
   StyledWatchListHeader,
   StyledListContainer,
 } from "./styles";
 
-export default function WatchList({
-  className,
-  openChatWindow,
-  connectionState,
-}: WatchListProps) {
+function WatchList({ openChatWindow, connectionState }: WatchListProps) {
   const {
     list,
     addUserToWatchList,
@@ -55,7 +51,7 @@ export default function WatchList({
   );
 
   return (
-    <StyledWatchList className={className}>
+    <>
       <StyledWatchListHeader>
         <h3> Watch List</h3>
         <IconButton onClick={changeDialogState.bind(this, true)}>
@@ -73,7 +69,7 @@ export default function WatchList({
         ></EmptyState>
       )}
       <AddUser open={dialogState} handleClose={handleClose}></AddUser>
-    </StyledWatchList>
+    </>
   );
 }
 
@@ -82,3 +78,5 @@ interface WatchListProps {
   openChatWindow: (tab: Tab) => void;
   connectionState: boolean;
 }
+
+export default withNavDrawer<WatchListProps>(WatchList);

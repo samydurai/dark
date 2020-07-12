@@ -33,5 +33,6 @@ export const StyledWatchListHeader = styled.div`
   display: flex;
   height: 48px;
   justify-content: space-between;
+  padding-left: 10px;
   background-color: ${backgroundColorLowElevation};
 `;

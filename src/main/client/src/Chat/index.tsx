@@ -9,7 +9,8 @@ import {
   listenToMessage,
 } from "../Shared/Utils/Websocket";
 
-import { StyledChatScreen, StyledWatchList, ChatPage } from "./styles";
+import { StyledChatScreen, ChatPage } from "./styles";
+import WatchList from "./WatchList";
 
 function Chat() {
   const {
@@ -39,10 +40,10 @@ function Chat() {
         sendMessage={sendMessage}
         changeActiveTab={changeActiveTab}
       ></StyledChatScreen>
-      <StyledWatchList
+      <WatchList
         openChatWindow={openChatWindow}
         connectionState={state.isConnected}
-      ></StyledWatchList>
+      ></WatchList>
     </ChatPage>
   );
 }
