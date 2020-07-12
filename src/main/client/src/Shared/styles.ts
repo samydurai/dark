@@ -1,8 +1,8 @@
 import { createGlobalStyle } from "styled-components";
 import { backgroundColor } from "./theme";
 
-const imageJPG = require("../static/appbackground.jpg");
-const imageWbebP = require("../static/appbackground.webp");
+const imageJPG = require("../Static/appbackground.jpg");
+const imageWbebP = require("../Static/appbackground.webp");
 
 const GlobalStyles = createGlobalStyle`
     body, input {

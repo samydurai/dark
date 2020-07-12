@@ -1,11 +1,14 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WorkboxPlugin = require("workbox-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+
+const outputPath = path.resolve(__dirname, "dist");
 
 module.exports = {
   entry: "./src/index.tsx",
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: outputPath,
     filename: "[name].[hash].bundle.js",
     chunkFilename: "[name].[hash].bundle.js",
     publicPath: "/",
@@ -61,9 +64,26 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "src/index.html",
     }),
-    new WorkboxPlugin.GenerateSW({
-      clientsClaim: true,
-      skipWaiting: true,
+    new WorkboxPlugin.InjectManifest({
+      swSrc: "./src/service-worker.js",
+      swDest: "service-worker.js",
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "src/manifest.webmanifest",
+          to: outputPath,
+        },
+        {
+          from: "src/Static/Icons/*.(png|ico)",
+          to: outputPath,
+          flatten: true,
+        },
+        {
+          from: "src/offline.html",
+          to: outputPath,
+        },
+      ],
     }),
   ],
   devServer: {

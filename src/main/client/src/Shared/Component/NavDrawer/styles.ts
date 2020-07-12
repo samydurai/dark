@@ -13,6 +13,7 @@ export const StyledWatchList = styled.div`
   display: flex;
   flex-flow: column;
   justify-content: space-between;
+  box-sizing: border-box;
 `;
 
 export const StyledOpenButton = styled.div`
