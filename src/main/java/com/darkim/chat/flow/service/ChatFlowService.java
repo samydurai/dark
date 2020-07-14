@@ -120,8 +120,9 @@ public class ChatFlowService {
         if (CollectionUtils.isEmpty(usernamesToBeUnwatched)) {
             return;
         }
-        Set<UserChatPreference> usersToBeUnwatched = chatPreferenceRepository.getUsersToBeEnabled(loggedInUser.getUserName(), usernamesToBeUnwatched);
+        Set<UserChatPreference> usersToBeUnwatched = chatPreferenceRepository.getUsersToBeUnwatched(loggedInUser.getUserName(), usernamesToBeUnwatched);
         chatPreferenceRepository.deleteAll(usersToBeUnwatched);
+
     }
 
     private void watchUsers(User loggedInUser, UserWatchRequest userWatchRequest) {
