@@ -4,15 +4,19 @@ server:
     enabled: true
 spring:
   jpa:
-    database: POSTGRESQL
+    database: H2
+    show-sql: true
     hibernate:
       ddl-auto: update
   datasource:
-    platform: postgres
-    url: ${JDBC_DATABASE_URL}
-    driverClassName: org.postgresql.Driver
-    hikari:
-      connection-timeout: 30000
+    platform: h2
+    url: jdbc:h2:file:/Users/you/demo
+    username: sa
+    password: pass
+    driverClassName: org.h2.Driver
+  h2:
+    console:
+      enabled: true
 
 jwt:
-  secret: ${SECRET_KEY}
+  secret: "secret"
