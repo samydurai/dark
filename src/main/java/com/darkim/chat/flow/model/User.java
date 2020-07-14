@@ -31,6 +31,6 @@ public class User {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    @OneToMany(targetEntity = UserChatPreference.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(targetEntity = UserChatPreference.class, fetch = FetchType.EAGER, mappedBy = "user")
     private Set<UserChatPreference> userPreferences;
 }

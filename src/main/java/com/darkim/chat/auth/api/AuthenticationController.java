@@ -24,6 +24,10 @@ public class AuthenticationController {
 
     private String domain;
 
+    private String profile = System.getProperty("spring.profiles.active");
+
+    private static final String PRODUCTION = "prod";
+
     @Autowired
     public void setAuthenticationService(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
@@ -46,7 +50,9 @@ public class AuthenticationController {
     private Cookie getCSRFTokenCookie(String csrfToken) {
         Cookie cookie = new Cookie("XSRF-TOKEN", csrfToken);
         cookie.setPath("/");
-        cookie.setSecure(true);
+        if (PRODUCTION.equals(profile)) {
+            cookie.setSecure(true);
+        }
         cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
         return cookie;
     }
@@ -61,7 +67,9 @@ public class AuthenticationController {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         cookie.setMaxAge(Integer.parseInt(Long.valueOf(TimeUnit.HOURS.toSeconds(24)).toString()));
-        cookie.setSecure(true);
+        if (PRODUCTION.equals(profile)) {
+            cookie.setSecure(true);
+        }
         return cookie;
     }
 }

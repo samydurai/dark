@@ -107,7 +107,8 @@ public class ChatFlowService {
     @Transactional
     public void watchUsers(String username, UserWatchRequest userWatchRequest) {
         User loggedInUser = getLoggedInUser(username);
-        if (CollectionUtils.isEmpty(userWatchRequest.getWatch())) {
+        if (CollectionUtils.isEmpty(userWatchRequest.getWatch()) &&
+                CollectionUtils.isEmpty(userWatchRequest.getUnwatch())) {
             return;
         }
         watchUsers(loggedInUser, userWatchRequest);
