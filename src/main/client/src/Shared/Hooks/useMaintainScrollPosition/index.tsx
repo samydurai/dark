@@ -7,7 +7,7 @@ export default function useMaintainScrollPosition(
   ref: MutableRefObject<HTMLDivElement>,
   messageArray: Message[]
 ) {
-  const isAtBottom = useRef<boolean>();
+  const isAtBottom = useRef<boolean>(true);
   const handleScrollEvent = useCallback(() => {
     isAtBottom.current =
       ref.current.scrollTop + ref.current.clientHeight ===
