@@ -16,6 +16,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 
 import java.security.Principal;
 import java.util.Set;
@@ -64,7 +65,7 @@ public class ChatWebsocketController {
         String sender = principal.getName();
         String receiver = chatMessage.getTo();
         boolean isReceiverIgnoredSender = chatPreferenceRepository.isUserIgnored(sender, receiver);
-        if (!isReceiverIgnoredSender) {
+        if (!isReceiverIgnoredSender && !StringUtils.isEmpty(chatMessage.getMessage())) {
             messageUtil.sendToUser(principal, chatMessage);
         }
     }
