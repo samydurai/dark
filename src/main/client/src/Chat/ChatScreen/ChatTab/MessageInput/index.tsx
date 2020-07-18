@@ -42,7 +42,7 @@ export default function MessageInput({
           endAdornment={
             <InputAdornment position="end">
               <IconButton onClick={handleClick}>
-                <Send></Send>
+                <Send />
               </IconButton>
             </InputAdornment>
           }

@@ -27,7 +27,7 @@ export interface PageState {
 enum Actions {
   OPEN,
   CLOSE,
-  MESSAGE_RECIEVED,
+  MESSAGE_RECEIVED,
   MESSAGE_SENT,
   CLEAR_UNREAD_MESSAGES,
   CHANGE_TAB,
@@ -41,7 +41,7 @@ interface PageAction {
   connectionState?: boolean;
 }
 
-const inintalState: PageState = {
+const initialState: PageState = {
   activeTab: null,
   tabs: [],
   messages: {},
@@ -90,7 +90,7 @@ function reducer(state: PageState, action: PageAction): PageState {
         tabs: filteredTabs,
         activeTab: filteredTabs[filteredTabs.length - 1]?.userId,
       };
-    case Actions.MESSAGE_RECIEVED:
+    case Actions.MESSAGE_RECEIVED:
       /*
       0. add to messages
       1.check if active tab ? perform none 
@@ -162,7 +162,7 @@ function reducer(state: PageState, action: PageAction): PageState {
 }
 
 export default function useChatState() {
-  const [state, dispatch] = useReducer(reducer, inintalState);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const openChatWindow = useCallback(
     (tab: Tab, changeTab?: boolean): void => {
@@ -201,10 +201,10 @@ export default function useChatState() {
     [dispatch]
   );
 
-  const recieveMessage = useCallback(
+  const receiveMessage = useCallback(
     (message: Message) => {
       dispatch({
-        action: Actions.MESSAGE_RECIEVED,
+        action: Actions.MESSAGE_RECEIVED,
         message: message,
       });
     },
@@ -236,7 +236,7 @@ export default function useChatState() {
     openChatWindow,
     closeChatWindow,
     sendMessage,
-    recieveMessage,
+    receiveMessage,
     changeActiveTab,
     changeConnectionState,
   };

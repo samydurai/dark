@@ -23,13 +23,13 @@ export default function App() {
   return (
     <MessageProvider value={setSnackbarState}>
       <ThemeProvider theme={darkTheme}>
-        <GlobalStyles></GlobalStyles>
+        <GlobalStyles />
         <Router>
           <Suspense fallback={<Loader />}>
             <Switch>
-              <Route path="/login" component={Login}></Route>
+              <Route path="/login" component={Login} />
               <Route path="/register" component={Register} />
-              <ProtectedRoutes component={Chat}></ProtectedRoutes>
+              <ProtectedRoutes component={Chat} />
             </Switch>
           </Suspense>
         </Router>
