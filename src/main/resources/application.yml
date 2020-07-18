@@ -10,7 +10,7 @@ spring:
       ddl-auto: update
   datasource:
     platform: h2
-    url: jdbc:h2:file:/Users/you/demo
+    url: jdbc:h2:file:/home/raiden/repos/samy
     username: sa
     password: pass
     driverClassName: org.h2.Driver

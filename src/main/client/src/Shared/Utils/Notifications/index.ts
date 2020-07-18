@@ -12,7 +12,10 @@ export const initNotification = () => {
 };
 
 export const showNotification = (message: Message) => {
-  if (hasPermission && document.visibilityState === "hidden") {
+  if (
+    hasPermission &&
+    (document.visibilityState === "hidden" || document.hidden)
+  ) {
     new Notification(`from ${message.from}`, { body: message.message });
   }
 };
