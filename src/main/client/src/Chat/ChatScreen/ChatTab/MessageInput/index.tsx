@@ -19,14 +19,17 @@ export default function MessageInput({
   const handleClick = useCallback(
     (e: React.SyntheticEvent) => {
       e.preventDefault();
-      const message: Message = {
-        from: "",
-        to: userId,
-        timestamp: new Date().toISOString(),
-        message: messageInputEl.current.value,
-      };
-      messageInputEl.current.value = "";
-      sendMessage(message);
+      const userInput = messageInputEl.current.value.trim();
+      if (userInput) {
+        const message: Message = {
+          from: "",
+          to: userId,
+          timestamp: new Date().toISOString(),
+          message: userInput,
+        };
+        messageInputEl.current.value = "";
+        sendMessage(message);
+      }
     },
     [sendMessage, userId]
   );

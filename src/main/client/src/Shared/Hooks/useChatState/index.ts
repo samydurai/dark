@@ -1,7 +1,10 @@
 import { useReducer, useCallback } from "react";
 
-import { sendMessage as sendWebsocketMessage } from "../../Utils/Websocket";
 import { Tab } from "@material-ui/core";
+
+import { playSound } from "../../Utils/Audio";
+import { showNotification } from "../../Utils/Notifications";
+import { sendMessage as sendWebsocketMessage } from "../../Utils/Websocket";
 
 export interface Message {
   from: string;
@@ -203,6 +206,8 @@ export default function useChatState() {
 
   const receiveMessage = useCallback(
     (message: Message) => {
+      playSound();
+      showNotification(message);
       dispatch({
         action: Actions.MESSAGE_RECEIVED,
         message: message,
