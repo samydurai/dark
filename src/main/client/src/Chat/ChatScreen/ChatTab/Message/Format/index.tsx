@@ -1,9 +1,8 @@
 import * as React from "react";
 import { memo } from "react";
 
-const regex = new RegExp(
-  /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
-);
+import useLinkPreview from "../../../../../Shared/Hooks/useLinkPreview";
+import { isValidUrl } from "../../../../../Shared/Utils/URLs";
 
 const getUrl = (url: string) => {
   if (url.indexOf("://") > -1) {
@@ -14,7 +13,7 @@ const getUrl = (url: string) => {
 };
 
 const format = (word: string) => {
-  if (regex.test(word)) {
+  if (isValidUrl(word)) {
     return (
       <>
         <a href={getUrl(word)} target="_blank" rel="noreferrer">
@@ -34,6 +33,7 @@ const checkProps = (
 };
 
 function FormattedMessage({ message }: FormattedMessageProps) {
+  const data = useLinkPreview(message.split("").join(""));
   const words = message.split(" ");
   return <>{words.map((word) => format(word))}</>;
 }
