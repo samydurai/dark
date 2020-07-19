@@ -14,7 +14,7 @@ import Larrow from "./leftArrow";
 const Message = styledComponent(Paper)({
   width: "fit-content",
   maxWidth: "80%",
-  padding: "10px",
+  padding: "6px 7px 8px 9px",
   boxSizing: "border-box",
   wordBreak: "break-word",
 });
